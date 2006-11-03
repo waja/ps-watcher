@@ -1,0 +1,1278 @@
+#!@PERL@ -w
+# -*- Perl -*-
+use diagnostics;
+my $vcid='$Id: ps-watcher.in.in,v 1.57 2006/03/10 19:07:05 rockyb Exp $ ';
+# See usage subroutine or perlpod documentation below.
+
+# Copyright (C) 2000, 2002, 2003, 2004, 2005, 2006 
+# Rocky Bernstein, email: rocky@cpan.org
+#
+# This program is free software; you can
+# redistribute it and/or modify it under the terms of the GNU General
+# Public License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+use vars qw($program $ps_cmd $ps_cmdfull $ps_fullcmd_fmt @ps_vars $ps_dvars
+	    $0 $logopened $ps_args_fmt $args
+            $count $pid $command $ps_arg_opts $DEVNULL %opts
+           );
+use strict;
+BEGIN { require 5.00503 }
+
+sub usage($) {
+  my ($full_help) = @_;
+
+  print "
+usage: 
+
+   $program [OPTIONS..]
+
+$program can be used to monitor various processes based on ps-like
+information.
+
+options: 
+  --help              -- print this help and exit
+  --doc               -- extract and print complete documentation and exit
+  --version           -- show a CVS version string and exit
+  --debug *n*         -- give debugging output. The higher the
+                         number, the more the output
+  --run | --norun     -- do/don't run actions
+                         go through the motions as though we were going to
+  --log  [*logfile*]  -- Set a log file for this program. If option given
+                         but no logfile, then use STDERR. Default is 
+                         no error log file.
+  --syslog | --nosyslog
+                      -- send or don't send error output to syslog
+                         Default is to send to syslog.
+  --config *cnf file* -- specify configuration file.
+
+  --daemon | --nodaemon 
+                      -- do or don't become a daemon. Default daemonize.
+  --sleep  *time*     -- sleep interval between iterations. The default is
+                         $opts{sleep_interval} seconds.
+  --path path         -- executable search path to use in running commands
+
+  --ps-prog *program* -- command that gets ps information. The default is:
+                         $opts{ps_prog}
+  --ps-pids-opt *ps opts* 
+                      -- ps options that lists pids and commands. The
+                         default is: $opts{ps_pid_opts}
+";
+
+  if ($full_help) {
+      print "
+General operation: 
+
+Periodically a list of processes obtained via ps. More precisely
+each item in the list contains the process name (just what's listed in
+the \"command\" field, not the full command and arguments) and its
+process id (pid). A configuration file specifies a list of Perl
+regular-expression patterns to match the process names against. For
+each match, a Perl expression specified for that pattern is
+evaluated. The evaluated expression can refer to variables which are
+set by ps and pertain to the matched process(es), for example the
+amount memory consumed by the process, or the total elapsed time. Some
+other variables are set by the program, such as the number of times
+the process is running. If the Perl expression for a matched pattern
+evaluates true, then an action can be run such as killing the program,
+restarting it, or mailing an alert.
+
+This program can be used to ensure a daemon hasn't died or ensure it
+is not running too many times. It might be used to determine when a
+process has consumed too many resources (for example due to a memory
+leak).
+
+The following variables can be used in patterns or actions:
+\t".  '$' . join("\n\t\$", @ps_vars) .
+"
+  The following is a sample config file:
+
+# Comments start with # or ; and go to the end of the line.
+
+# The format for each entry is in Microsoft .INI form:
+# [process-pattern]
+# trigger = perl-expression
+# action  = program-and-arguments-to-run
+
+[httpd\$]
+  trigger = \$count < 4
+  action  = echo \"\$trigger fired -- You have \$count \$command sessions.\"
+
+[em?cs]
+trigger = \$vsz > 10
+action  = echo \"Looks like you have a big \$command program: \$vsz KB\"
+
+";
+   }
+   exit 100;
+}
+
+sub init();
+sub podthis();
+sub process_options();
+sub show_version();
+sub daemonize();
+sub eval_trigger_action($$$);
+sub make_the_rounds($);
+sub elapsed2secs($);
+sub logger($);
+sub debug_log($$);
+sub gather_psinfo();
+sub read_config($);
+sub check_config_file($);
+sub run_trigger($$$);
+
+init();
+process_options();
+
+# Unfurl the banner...
+logger("Starting: $vcid");
+
+my $cfg=read_config($opts{conf_file});
+
+if (!defined($cfg)) {
+  for my $line (@Config::IniFiles::errors) {
+    logger($line);
+  }
+  exit 2;
+}
+
+if ($opts{daemon}) {
+  daemonize();
+}
+
+install_handlers();
+
+do {
+  make_the_rounds($cfg);
+  sleep $opts{sleep_interval} if $opts{sleep_interval} > 0;
+  check_config_file($opts{conf_file});
+} until ($opts{sleep_interval} < 0) ;
+if ($opts{syslog}) {
+ use Sys::Syslog;
+ closelog;
+}
+exit 0;
+
+# Evaluates the trigger and if that's true also performs
+# an action. 1 is returned if the action was performed, 
+# zero otherwise.
+sub eval_trigger_action($$$) {
+    my ($trigger,$action,$perl_action) = @_;
+    my $etrigger=$trigger;
+    # It is a pain to predeclare all of the variables assigned
+    # by ps which is OS and ps specific. So we'll allow anything.
+    # Likewise, we'll allow it occur in $action.
+    no strict; 
+    if ($trigger ne '1') {
+	$etrigger =~ s/"/\\"/g;
+	debug_log("trigger before substitution: $etrigger", 2);
+	$etrigger = eval qq/"$trigger"/;
+    }
+    debug_log("trigger after substitution: $etrigger", 2);
+    if (eval ($etrigger)) {
+	if (defined($perl_action)) {
+	    debug_log("running Perl_action: $perl_action", 2);
+	    eval($perl_action) if $opts{run};
+	}
+	if (defined($action)) {
+	    debug_log("action before substitution: $action", 2);
+	    my $eaction=$action;
+	    $eaction =~ s/"/\\"/g;
+	    $eaction = eval qq/"$eaction"/;
+	    debug_log("action after substitution: $eaction", 2);
+	    my $output=`$eaction` if $opts{run};
+	    chomp($output);
+	    logger($output) if $output;
+	}
+	return 1;
+    }
+    return 0;
+}
+
+# Perform a round over the process_patterns comparing against the
+# process info to see if anything's stirring.
+sub make_the_rounds($) {
+  my $cfg = $_[0];
+  my @ps_info=gather_psinfo();
+  foreach our $ps_pat ($cfg->Sections()) {
+    debug_log("process pattern: /$ps_pat/", 1);
+    my @selected_ps;
+    my $in_prolog_epilog=0;
+    my $trigger     = $cfg->val($ps_pat, 'trigger') || '1';
+    my $action      = $cfg->val($ps_pat, 'action');
+    my $perl_action = $cfg->val($ps_pat, 'perl-action');
+    my $occurs      = $cfg->val($ps_pat, 'occurs') || "first";
+    local $count;
+    if ($ps_pat =~ /^\$PROLOG/ || $ps_pat =~ /\$EPILOG/) {
+	# Set to run trigger below.
+	$count  = @ps_info;
+	$in_prolog_epilog=1;
+    } else {
+	@selected_ps = grep(/$ps_pat/, @ps_info);
+	$count = @selected_ps; 
+	debug_log("count for /$ps_pat/: $count", 2);
+    }
+    if ($in_prolog_epilog) {
+	# execute trigger
+	eval_trigger_action($trigger, $action, $perl_action);
+    } elsif ($occurs =~ /none/i) {
+      if ($count eq 0) {
+	  # execute the trigger anyway
+	  eval_trigger_action($trigger, $action, $perl_action);
+      }
+    } elsif ($count gt 0) {
+    TRIGGER:
+      foreach (@selected_ps) {
+	next if !/\s*(\d+)\s+(\S+)/;
+        local($pid, $command) = /\s*(\d+)\s+(\S+)/;
+        if ($pid !~ /\d+/) {
+          logger("Something wrong with ps format:\n$_");
+          next;
+        }
+
+        my $ps_fullcmd = sprintf $ps_fullcmd_fmt, $pid;
+        my @output     = `$ps_fullcmd`;
+        my $output='';
+	if (@output == 1) {
+	  # Got one line of output - good.
+	  $output=$output[0];
+	  # Make sure though we don't just have a title line. 
+	  # One of the fields should be just digits, e.g. ppid, uid, gud...
+	  next if $output !~ m{\s+\d+\s+};
+        } elsif (@output == 2 && @PS_NO_NULL_HEADER@) {
+	  # Got two lines of output - we are running a ps where
+          #  we can't remove the title line?
+	  $output=$output[1];
+        } elsif (@output > 1 && @PS_CAN_RETURN_MULTIPLE_LINES@) {
+	  # Got multiple lines of output - we are running a ps which can
+	  # do so. For example Solaris does this for a process that has many
+	  # LWPs (light-weight processes).
+	  $output=$output[0];
+	} else {
+          debug_log("Something wrong getting ps variables", 1);
+	  next;
+        }
+
+	local $args = '';
+	if ($ps_arg_opts) {
+	  my $ps_argscmd = sprintf $ps_args_fmt, $pid;
+          my @output     = `$ps_argscmd`;
+	  if (@output == 1) {
+  	    $args=$output[0];
+          } elsif (@output == 2 && @PS_NO_NULL_HEADER@) {
+	    $args=$output[1];
+	  } else {
+            debug_log("Something wrong with getting command arguments", 1);
+          }
+	}
+
+        # Process may have disappeared. In this case we'll get no 
+	# output.
+	next if !$output;
+
+        # Add ' ' so split will junk first ps_dvars $junk.
+        $output = ' ' . $output;
+        my $perl_ps_assign = "$ps_dvars = split(/\\s+/, \$output)";
+        { 
+          # It is a pain to predeclare all of the variables assigned
+          # by ps which is OS and ps specific. So we'll allow anything.
+          # Likewise, we'll allow it occur in $action.
+          no strict; 
+
+	  # Escape backticks so that we don't inadvertently run
+	  # the program. For example there could be a process named
+	  # `/tmp/evilcommand` (with backticks). Thanks to Randal
+	  # Schwartz for noticing the problem.
+	  # Not sure if there are other things to watch out for.
+	  # Although the Perl Cookbook suggests how to make system,
+	  # safe, it is silent about making eval safe.
+	  $command =~ s/`/\\`/g;
+
+          if (eval ($perl_ps_assign)) {
+	      my $evaled = eval_trigger_action($trigger, $action, 
+					       $perl_action);
+	      last TRIGGER if $evaled && $occurs eq 'first-trigger';
+	      last TRIGGER if $occurs eq 'first';
+          } else {
+            logger("Something wrong with perl assignment: $perl_ps_assign");
+            last TRIGGER;
+	  }
+        } # no strict
+      } # foreach
+    } # if $count
+  }
+}
+
+# Initailize various variables variously.
+sub init() {
+
+  use File::Basename;
+  $program          = basename($0); # Who am I today, anyway? 
+
+  $DEVNULL = '/dev/null'; # And what do we do about non Unix?
+
+  use constant MINS   => 60;
+  use constant HOURS  => 60*60;
+  use constant DAYS   => HOURS * 24;
+
+  $opts{debug}        = 0;  # no debugging
+  $opts{run}          = 1;  # run actions
+  $opts{syslog}       = 1;  # Log errors to syslog
+  $opts{logfile}      = $DEVNULL;  
+  $opts{daemon}       = 1;  # Run as daemon;
+  $opts{ps_prog}      = '@PS@';   # Where is ps? 
+  $opts{ps_pid_opts}  = '@PS_PID_OPTS@';   # How do I get pids and commands?
+
+  $ps_arg_opts  = '@PS_ARGS@';       # How do I get full process command?
+
+  # List of all the fields from ps we will be able to use. Don't need
+  # to list variables listed above. 
+  @ps_vars = qw ( @PS_VARS@ 
+);
+
+  # Convert the above into an argument list like
+  # ($junk, $user, ... )
+  # The first argument ($junk) will be null and thrown out.
+  $ps_dvars = '($junk,$' . join(',$', @ps_vars) . ')';
+
+  $opts{sleep_interval} = 300;
+
+}
+
+# The bane of programming.
+sub process_options() {
+  use Getopt::Long;
+  my(@opt_cf);
+  $Getopt::Long::autoabbrev = 1;
+  my($newstyle_config);
+
+  my ($help, $long_help, $show_version);
+
+  my $result = &GetOptions
+    (
+     'help'         => \$help,
+     'doc'          => \$long_help,
+     'version'      => \$show_version,
+     'config=s'     => \$opts{conf_file},
+     'debug=i'      => \$opts{debug}, 
+     'path=s'       => \$ENV{PATH},
+     'ps-pid-opts=s'=> \$opts{ps_pid_opts},
+     'ps-prog=s'    => \$opts{ps_prog},
+     'sleep=i'      => \$opts{sleep_interval},
+     'log:s'        => \$opts{logfile},
+     'syslog!'      => \$opts{syslog}, 
+     'run!'         => \$opts{run}, 
+     'daemon!'      => \$opts{daemon}, 
+    );
+
+  show_version() if $show_version;
+  usage(1) if $help;
+  podthis() if $long_help;
+
+  # However specifying a configuration file is not. 
+  # Nor can we deal with multiple configuration files or tolerate
+  # option-processing errors. 
+  usage(0) if !$result;
+
+  # The option-specifier "--config" is optional...
+  if (@ARGV && !defined($opts{conf_file})) {
+    $opts{conf_file} = shift(@ARGV);
+  } 
+  
+  # However we do have to give exactly one configurtion file. 
+  if (!defined($opts{conf_file}) || @ARGV != 0) {
+    print STDERR "$program: Please specify exactly one configuration file.\n";
+    usage(0);
+  }
+
+  $ps_cmd = "$opts{ps_prog} $opts{ps_pid_opts}"; 
+  my $ps_vars;
+  if (@PS_CUSTOM_HEADER@) {
+   $ps_vars = join('= -o ', @ps_vars) . '=';
+  } else {
+   $ps_vars = join(' -o ', @ps_vars);
+  }
+
+  if ('@PS_FULLCMD_FMT@') {
+      $ps_fullcmd_fmt  = "@PS_FULLCMD_FMT@";
+  } else {
+      $ps_fullcmd_fmt  = "$opts{ps_prog} -p %d -o $ps_vars";
+  }
+  if ('@PS_ARGS_FMT@') {
+      $ps_args_fmt     = "@PS_ARGS_FMT@";
+  } else {
+      $ps_args_fmt     = "$opts{ps_prog} -p %d $ps_arg_opts";
+  }
+
+  open STDIN, $DEVNULL   or die "Can't read $DEVNULL: $!";
+  open STDOUT, ">>$opts{logfile}" or die "Can't write to $opts{logfile}: $!"
+    if $opts{logfile} ne '';
+  open STDERR, ">>$opts{logfile}" or die "Can't write to $opts{logfile}: $!"
+    if $opts{logfile} ne '';
+}
+
+# Signal handling..
+sub install_handlers {
+  $SIG{'QUIT'} = \&terminate;
+  $SIG{'TERM'} = \&terminate;
+  $SIG{'INT'}  = \&terminate;
+  $SIG{'HUP'}  = \&null_handler;
+  $SIG{'USR1'} = \&debug_up_handler;
+  $SIG{'USR2'} = \&debug_down_handler;
+}
+
+# Used perhaps to break out of a deep sleep.
+sub null_handler {
+  my($signo) = @_;
+  logger("Received signal: ${signo}");
+}
+
+# Increase verbosity of debugging.
+sub debug_up_handler {
+  my($signo) = @_;
+  $opts{debug}++;
+  logger("Received signal: ${signo}. Increasing debugging to $opts{debug}.");
+}
+
+# Decrease verbosity of debugging.
+sub debug_down_handler {
+  my($signo) = @_;
+  $opts{debug}--;
+  logger("Received signal: ${signo}. Decreasing debugging to $opts{debug}.");
+}
+
+# Signal handler to go down recording the signal.
+sub terminate {
+  my($signo) = @_;
+  use Config;
+  if (defined $Config{sig_name}) {
+      my $i = 0; 
+      my @signame;
+      my %sig;
+      foreach my $name (split(' ', $Config{sig_name})) {
+	  $signame[$i] = $name;
+	  $sig{$name} = $i;
+	  $i++;
+      }
+      $signo = $sig{$signo} if exists($sig{$signo});
+      if ($signo =~ m{\A\d+\Z} ) {
+	  logger("Going down on $signame[$signo] (${signo}) signal. " .
+		 "Have a nice day!");
+      } 
+  } else {
+      logger("Going down on signal ${signo}). Have a nice day!");
+  }
+
+  $signo = 15 if $signo !~ m{\A\d+\Z};
+  if ($opts{syslog}) {
+      use Sys::Syslog;
+      closelog;
+  }
+  exit $signo;
+};
+
+# Utility function for parsing/converting elapsed time into seconds.
+sub elapsed2secs($) {
+  $_ = $_[0];
+
+  # Handle formats like:
+  # 1-08:34:37  -- One day, 8 hours, 34 minutes, 37 seconds
+  #   20:40:34  -- 20 hours, 40 minutes, 34 seconds
+  #       0:00  -- 0 seconds.
+
+  # 1-08:34.37  -- One day, 8 hours, 34 minutes, 37 seconds
+  #   20:40.34  -- 20 hours, 40 minutes, 34 seconds
+  #       5.03  -- 5 minutes, 3 seconds.
+  #          5  -- 5 seconds.
+
+  # Some easy cases.
+  return -1 if !defined($_) || m{\A\s*\Z};
+  return $_ if m{\A\d+\Z};
+
+  # Originally had as one pattern and optional 
+  # arguments but i got compaints about using
+  # uninitialized variables even with "no diagonstics". Would rather
+  # switch than fight.
+  my $min_secs_pat = '(\d{1,2})[:.](\d\d)';
+  if (m{
+      (\d{1,2})-          # The number of days. e.g. 1- or 19- or blank
+      (\d{1,2})[:.]       # The number of hrs. e.g. 01: or 23: or blank
+      $min_secs_pat
+      }x) {
+      my ($days, $hours, $minutes, $secs) = ($1, $2, $3, $4);
+      return ($days*DAYS + $hours*HOURS + $minutes*MINS + $secs);
+  } elsif (m{
+	   (\d{1,2})[:.]  # The number of hrs. e.g. 01: or 23: or blank
+	   $min_secs_pat
+	   }x) {
+      my ($hours, $minutes, $secs) = ($1, $2, $3);
+      return ($hours*HOURS + $minutes*MINS + $secs);
+  } elsif (m{$min_secs_pat}) {
+    my ($minutes, $secs) = ($1, $2);
+    return ($minutes*MINS + $secs);
+  } else {
+    logger("Error in converting $_ to seconds");
+    return -1;
+  }
+}
+
+# Return time and PID as string in a common format
+sub timestring() { 
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = 
+	localtime(time);
+    $mon++; 
+    return sprintf( "%.2d/%.2d/%.2d %.2d:%.2d:%.2d %s[$$]", 
+		    $mon, $mday, $year%100, $hour, $min, $sec, $program); 
+}
+
+# log error to syslog and print to STDERR.
+sub logger($) {
+  my($msg) = shift;
+
+  if ($opts{syslog}) {
+    if (!$logopened) {
+      use Sys::Syslog;
+      $logopened++;
+      openlog($program,'cons,pid', 'err');
+    }
+    syslog('info', $msg);
+  }
+  if (defined($opts{logfile}) && $opts{logfile} ne $DEVNULL) {
+    my $ts=timestring();
+    print STDERR "$ts: $msg\n";
+  }
+}
+
+sub debug_log($$) {
+  my($msg, $level) = @_;
+  logger("** debug ** $msg") if $opts{debug} >= $level;
+}
+
+sub gather_psinfo() {
+  my @output=`$ps_cmd`;
+  return @output;
+}
+
+# Show the CVS version id string and quit.
+sub show_version() {
+  print "$vcid
+Copyright (C) 2000, 2002, 2003, 2004, 2006 Rocky Bernstein.
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+";
+  exit 10;
+}
+
+
+sub daemonize() {
+  chdir '/'                 or die "Can't chdir to /: $!";
+  defined(my $pid = fork)   or die "Can't fork: $!";
+  exit 0 if $pid;
+  use POSIX qw(setsid);
+  setsid()                  or die "Can't start a new session: $!";
+  umask 0;
+}
+
+# Time configuration file was last read.
+my $conf_time;
+
+# Read a configuration file.
+sub read_config($) {
+  use Config::IniFiles;
+  my($cf)=@_;
+  if (!-f $cf || !-r _ || -z _ || !-T _) {
+    logger("Unusable config file: <$cf>");
+    return undef;
+  } 
+
+  # Save time we read the configuration file so we can check back
+  # later to see if it changed.
+
+  my($dev, $ino, $mode, $nlink, $uid, $gid, $rdev, $size,
+     $atime, $mtime, $ctime) = stat $cf;
+  $conf_time = $mtime;
+
+  return new Config::IniFiles( -file => $cf );
+}
+
+# Check to see if any configuration file has changed 
+# since the last time this routime was called.
+# Updates global $conf_time.
+sub check_config_file($) {
+  my ($conf_file) = @_;
+  my($dev, $ino, $mode, $nlink, $uid, $gid, $rdev, $size,
+     $atime, $mtime, $ctime) = stat $opts{conf_file}; 
+  if ( defined($conf_time) && defined($mtime) && $conf_time < $mtime ) { 
+    logger("Configuration file $conf_file modified; re-reading...");
+    $cfg = read_config($conf_file);
+  }
+}
+
+sub run_trigger($$$) {
+  my($trigger, $action, $count) = @_;
+  my $etrigger=$trigger;
+  if ($trigger ne '1') {
+    $etrigger =~ s/"/\\"/g;
+    debug_log("trigger before substitution: $etrigger", 2);
+    $etrigger = eval qq/"$trigger"/;
+  }
+  debug_log("trigger after substitution: $etrigger", 2);
+  if (eval ($etrigger)) {
+    debug_log("action before substitution: $action", 2);
+    my $eaction=$action;
+    $eaction =~ s/"/\\"/g;
+    $eaction = eval qq/"$eaction"/;
+    debug_log("action after substitution: $eaction", 2);
+    my $output=`$eaction` if $opts{run};
+    chomp($output);
+    logger($output) if $output;
+  }
+}
+
+sub podthis() {
+  use Pod::Text;
+  $^W = 0;
+  pod2text $0;
+  exit 101;
+}
+
+#--------------------------------------------------
+=pod
+
+=head1 NAME
+
+@PACKAGE@ - monitors various processes based on ps-like information.
+
+
+=head1 SYNOPSIS
+
+B<@PACKAGE@> [I<options>...]
+            [C<--config>] I<config-file>
+
+=head1 DESCRIPTION
+
+Periodically a list of processes obtained via C<ps>. More precisely
+each item in the list contains the process name (just what's listed in
+the "cmd" field, not the full command and arguments) and its process
+id (pid). A configuration file specifies a list of Perl
+regular-expression patterns to match the processes against. For each
+match, a Perl expression specified for that pattern is evaluated. The
+evaluated expression can refer to variables which are set by ps and
+pertain to the matched process(es), for example the amount memory
+consumed by the process, or the total elapsed time. Some other
+variables are set by the program, such as the number of times the
+process is running. If the Perl expression for a matched pattern
+evaluates true, then an action can be run such as killing the program,
+restarting it, or mailing an alert, or running some arbitrary Perl
+code.
+
+Some things you might want to watch a daemon or process for:
+
+=over 2
+
+=item *
+
+check that it is running (hasn't died)
+
+=item *
+
+ensure it is not running too many times
+
+=item *
+
+isn't consuming too much memory (perhaps a memory leak), or I/O
+
+=back
+
+Some actions you might want to take:
+
+=over 2
+
+=item *
+
+restart a process
+
+=item *
+
+kill off rampant processes
+
+=item *
+
+send an alert about any of the conditions listed above
+
+=back
+
+Depending on options specfied, this program can be run as a daemon,
+run once (which is suitable as a C<cron> job), or run not as a daemon
+but still continuously (which may be handy in testing the program or
+your configuration).
+
+=head2 OPTIONS
+
+=over 4
+
+=item --help
+
+Print a usage message on standard error and exit with a return code
+of 100.
+
+Z<>
+
+=item --doc
+
+Extact the full documentation that you are reading now, print it and
+exit with a return code of 101.
+
+Z<>
+
+=item --version
+
+Print the version release on standard output and exit with a return
+code of 10.
+
+Z<>
+
+=item --debug I<number> 
+
+Give debugging output. The higher the number, the more the output. The
+default is 0 = none. 2 is the most debugging output.
+
+=item [--config] I<configuration file>
+
+Specify configuration file. .
+
+See L<CONFIGURATION FILE FORMAT> below for information on the format
+of the configuration file and L<EXAMPLE CONFIGURATION> for a complete
+example of a configuration file.
+
+Z<>
+
+=item --log [I<log file>]
+
+Send or don't send error and debugging output to a log file. If option
+is given but no logfile is specified, then use STDERR. The default is
+no error log file.  See also --syslog below.
+
+Z<>
+
+=item --syslog | --nosyslog
+
+Send or don't send error and debugging output to syslog. The default
+is to syslog error and debug output.
+
+Z<>
+
+=item --daemon | --nodaemon
+
+Run or don't as a daemon.
+
+Z<>
+
+=item --path I<search-path>
+
+Specify the executable search path used in running commands.
+
+=item --ps-prog I<program>
+
+One can specify the command that gives ps information. By default, the
+command is F<@PS@>.
+
+Z<>
+
+=item --run | --norun  
+
+do/don't run actions go through the motions as though we were going
+to. This may be useful in debugging.
+
+Z<>
+
+=item --sleep I<interval in seconds>
+
+It is expected that one might want to run @PACKAGE@ over and over
+again. In such instances one can specify the amount of time between
+iterations with this option.
+
+If a negative number is specified the program is run only once.
+
+Z<>
+
+=back
+
+=head2 CONFIGURATION FILE MODIFICATION AND SIGNAL HANDLING
+
+Periodically @PACKAGE@ checks to see if the configuration file
+that it was run against has changed. If so, the program rereads the
+configuration file.
+
+More precisely, the checks are done after waking up from a slumber.
+If the sleep interval is long (or if you are impatient), you can
+probably force the program to wake up using a HUP signal.
+
+At any time you can increase the level of debug output by sending a
+USR1 signal to the @PACKAGE@ process. Similarly you can decrease the
+level of debug output by sending the process a USR2 signal.
+
+It is recommended that you terminate @PACKAGE@ via an INT, TERM, or QUIT
+signal.
+
+=head1 CONFIGURATION FILE FORMAT
+
+The format of a configuration file is a series of fully qualified
+filenames enclosed in square brackets followed by a number of
+parameter lines. Each parameter line has a parameter names followed by
+an "equal" sign and finally value. That is:
+
+ # This is a comment line
+ ; So is this.
+ [process-pattern1]
+  parameter1 = value1
+  parameter2 = value2
+
+ [process-pattern2]
+  parameter1 = value3
+  parameter2 = value4
+
+Comments start with # or ; and take effect to the end of the line.
+
+This should be familiar to those who have worked with text-readible
+Microsoft C<.INI> files.
+
+Note process patterns, (F<process-pattern1> and F<process-pattern2>
+above) must be unique. If there are times when you may want to
+refer to the same process, one can be creative to make these unique.
+e.g. F<cron> and F<[c]ron> which refer to the same process even
+though they I<appear> to be different.
+
+As quoted directly from the Config::IniFiles documentation:
+
+Multiline or multivalued fields may also be defined ala UNIX
+"here document" syntax:
+
+  Parameter=<<EOT
+  value/line 1
+  value/line 2
+  EOT
+
+You may use any string you want in place of "EOT".  Note
+that what follows the "<<" and what appears at the end of
+the text I<must> match exactly, including any trailing
+whitespace.
+
+There are two special "process patterns": $PROLOG and $EPILOG, the
+former should appear first and the latter last.
+
+You can put perl code to initialize variables here and do cleanup
+actions in these sections using "perl-action." 
+
+A description of parameters names, their meanings and potential values
+follows.
+
+=over
+
+=item trigger
+
+This parameter specifies the condition on which a process action is
+fired.  The condition is evaluated with Perl eval() and should
+therefore return something which is equivalent to "true" in a Perl
+expression.
+
+If no trigger is given in a section, true or 1 is assumed and
+the action is unconditionally triggered.
+
+Example: 
+
+  # Match if httpd has not spawned enough (<4) times. NFS and databases
+  # daemons typically spawn child processes.  Since the program
+  # matches against the command names, not commands and arguments,
+  # something like: ps -ef | grep httpd won't match the below.
+  # If you want to match against the command with arguments, see
+  # the example with $args below.
+  [httpd$]
+  trigger = $count <= 4
+
+=item occurs
+
+This parameter specifies how many times an action should be performed
+on processes matching the section trigger. Acceptable values are
+"every", "first", "first-trigger", and "none".
+
+Setting the occurs value to "none" causes the the trigger to be
+evaluated when there are no matching processes.  Although one might
+think "$count == 0" in the action expression would do the same thing,
+currently as coded this does not work.
+
+Setting the occurs value to "first" causes the process-pattern rule to
+be finished after handling the first rule that matches, whether or not the
+trigger evaluated to true.
+
+Setting the occurs value to "first-trigger" causes the process-pattern
+rule to be finished after handling the first rule that matches I<and>
+the trigger evaluates to true.
+
+If the item parameter is not specified, "first" is assumed.
+
+Examples:
+
+  [.]
+  occurs = first
+  action = echo "You have $count processes running"
+
+  # Note in the above since there is no trigger specified,
+  #   occurs = first
+  # is the same thing as 
+  #   occurs = first-trigger
+
+  [.?]
+  trigger = $vsz > 1000
+  occurs  = every
+  action  = echo "Large program $command matches $ps_pat: $vsz KB"
+
+  # Fire if /usr/sbin/syslogd is not running.
+  # Since the program matches against the command names, not commands and
+  # arguments, something like: 
+  #   ps -ef | grep /usr/sbin/syslogd
+  # won't match the below.
+  [(/usr/sbin/)?syslogd]
+  occurs = none
+  action = /etc/init.d/syslogd start
+
+=item action
+
+This specifies the action, a command that gets run by the system
+shell, when the trigger condition is evaluated to be true.
+
+Example:
+
+ action = /etc/init.d/market_loader.init restart
+
+=item perl-action
+
+This specifies Perl statements to be eval'd. This can be especially
+useful in conjunction with $PROLOG and $EPILOG sections to make tests
+across collections of process and do things which @PACKAGE@
+would otherwise not be able to do.
+
+Example:
+
+  # A Perl variable initialization.
+  # Since @PACKAGE@ runs as a daemon it's a good idea
+  # to (re)initialize variables before each run.
+  [$PROLOG]
+    perl-action = $root_procs=0;
+
+  # Keep track of how many root processes we are running
+  [.*]
+    perl-action = $root_procs++ if $uid == 0
+    occurs  = every
+
+  # Show this count.
+  [$EPILOG]
+    action  = echo "I counted $root_procs root processes"
+
+=back
+
+=head2 EXPANDED VARIABLES IN TRIGGER/ACTION CLAUSES
+
+Any variables defined in the program can be used in pattern or
+action parameters. For example, C<$program> can be used to refer to 
+the name of this program @PACKAGE@.
+
+The following variables can be used in either the pattern or action
+fields.
+
+=over
+
+=item $action
+
+A string containing the text of the action to run.
+
+Z<>
+
+=item $perl_action
+
+A string containing the text of the perl_action to run.
+
+Z<>
+
+=item $ps_pat
+
+The Perl regular expression specified in the beginning of the section.
+
+Z<>
+
+=item $command
+
+The command that matched $ps_pat.
+
+The Perl regular expression specified in the beginning of the section.
+Normally processes will not have funny characters in them. Just in
+case, backticks in $command are escaped.
+
+Example: 
+
+  # List processes other than emacs (which is a known pig) that use lots
+  # of virtual memory
+
+  [.*]
+  trigger = $command !~ /emacs$/ && $vsz > 10
+  action  = echo \"Looks like you have a big \$command program: \$vsz KB\"
+
+Z<>
+
+=item $count
+
+The number of times the pattern matched. Presumably the number of
+processes of this class running.
+
+Z<>
+
+=item $trigger
+
+A string containing the text of the trigger.
+
+=back
+
+A list of variables specific to this program or fields commonly found in
+C<ps> output is listed below followed by a description of the more
+common ones. See also C<ps> for a more complete
+description of the meaning of the field.
+
+ @PS_VARS@
+
+Beware though, in some situations ps can return multiple lines for a
+single process and we will use just one of these in the trigger. In
+particular, Solaris's C<ps> will return a line for each LWP (light-weight
+process). So on Solaris, if a trigger uses variable lwp, it may or may
+not match depending on which single line of the multiple C<ps> lines is
+used.
+
+Z<>
+
+=over 
+
+=item $args
+
+The command along with its command arguments. It is possible that this
+is might get truncated at certain length (if ps does likewise as is
+the case on Solaris). 
+
+Z<>
+
+=item $ppid
+
+The parent process id.
+
+Z<>
+
+=item $stime
+
+The start time of the process.
+
+Z<>
+
+=item $etime
+
+The end time of the process.
+
+Z<>
+
+=item $pmem
+
+The process memory.
+
+Z<>
+
+=item $pcpu
+
+The percent CPU utilization.
+
+Z<>
+
+=item $tty
+
+The controlling tty.
+
+Z<>
+
+=item $szv
+
+Virtual memory size of the process
+
+=back
+
+=head2 OTHER THINGS IN TRIGGER CLAUSES
+
+To make testing against elapsed time easier, a function C<elapse2sec()>
+has been written to parse and convert elapsed time strings in the 
+format C<dd-hh:mm:ss> and a number of seconds.
+
+Some constants for the number of seconds in a minute, hour, or day
+have also been defined. These are referred to as C<MINS>, C<HOURS>,
+and C<DAYS> respectively and they have the expected definitions:
+
+  use constant MINS   => 60;
+  use constant HOURS  => 60*60;
+  use constant DAYS   => HOURS * 24;
+
+Here is an example of the use of C<elapsed2sec()>:
+
+  # Which processes have been running for more than 3 hours?
+  # Also note use of builtin-function elapsed2secs, variable $etime
+  # and builtin-function HOURS
+  [.]
+    trigger = elapsed2secs('$etime') > 1*DAYS
+    action  = echo "$command has been running more than 1 day ($etime)"
+    occurs  = every
+
+Please note the quotes around '$etime'.
+
+=head1 EXAMPLE CONFIGURATION
+
+  # Comments start with # or ; and go to the end of the line.
+
+  # The format for each entry is in Microsoft .INI form:
+  # [process-pattern]
+  # trigger = perl-expression
+  # action  = program-and-arguments-to-run
+
+  [httpd$]
+    trigger = $count < 4
+    action  = echo "$trigger fired -- You have $count httpd sessions."
+
+  [.]
+  trigger = $vsz > 10
+  action  = echo "Looks like you have a big $command program: $vsz KB"
+
+  # Unfortunately we have use a different pattern below. (Here we use
+  # ".?" instead of ".".) In effect the the two patterns mean
+  # test every process.
+  [.?]
+    trigger = elapsed2secs('$etime') > 2*MINS && $pcpu > 40
+    occurs  = every
+    action  = <<EOT
+     echo "$command used $pcpu% CPU for the last $etime seconds" | /bin/mail root
+     kill -TERM $pid
+  EOT
+
+  # Scripts don't show as the script name as the command name on some
+  # operating systems.  Rather the name of the interpreter is listed
+  # (e.g. bash or perl) Here's how you can match against a script.
+  # BSD/OS is an exception: it does give the script name rather than
+  # the interpreter name.
+  [/usr/bin/perl]
+    trigger = \$args !~ /ps-watcher/
+    occurs  = every
+    action  = echo "***found perl program ${pid}:\n $args"
+
+=head1 Using $PROLOG for getting non-ps information
+
+Here is an example to show how to use ps-watcher to do something not
+really possible from ps: check to see if a I<port> is active.  We make
+use of lsof to check port 3333 and the $PROLOG make sure it runs.
+
+  [$PROLOG]
+    occurs  = first
+    trigger = { \$x=`lsof -i :3333 >/dev/null 2>&1`; \$? >> 8 }
+    action  = <<EOT
+    put-your-favorite-command-here arg1 arg2 ...
+  EOT
+
+=head1 SECURITY CONSIDERATIONS
+
+Any daemon such as this one which is sufficiently flexible is a
+security risk. The configuration file allows arbitrary commands to be
+run. In particular if this daemon is run as root and the configuration
+file is not protected so that it can't be modified, a bad person could
+have their programs run as root.
+
+There's nothing in the ps command or ps-watcher, that requires one to
+run this daemon as root. 
+
+So as with all daemons, one needs to take usual security precautions
+that a careful sysadmin/maintainer of a computer would. If you can run
+any daemon as an unprivileged user (or with no privileges), do it!  If
+not, set the permissions on the configuration file and the directory
+it lives in. 
+
+This program can also run chrooted and there is a --path option that
+is available which can be used to set the executable search path.  All
+commands used by @PACKAGE@ are fully qualified, and I generally give a
+full execution path in my configuration file, so consider using the
+option --path=''.
+
+Commands that need to be run as root you can run via sudo.  I often
+run process accounting which tracks all commands run. Tripwire may be
+useful to track changed configuration files.
+
+=head1 TROUBLESHOOTING
+
+To debug a configuration file the following options are useful:
+
+@PACKAGE@ --log --nodaemon --sleep -1 --debug 2 I<configuration-file> 
+
+For even more information and control try running the above under the
+perl debugger, e.g.
+
+perl -d @PACKAGE@ --log --nodaemon --sleep -1 --debug 2 I<configuration-file> 
+
+=head1 BUGS
+
+Well, some of these are not so much a bug in @PACKAGE@ so much as a
+challenge to getting @PACKAGE@ to do what you want it to do. 
+
+One common problem people run in into is understanding exactly what
+the process variables mean. The manual page L<ps(1)> should be of
+help, but I've found some of the descriptions either a bit vague or
+just plain lacking.
+
+Sometimes one will see this error message when debug tracing is turned on:
+
+  ** debug ** Something wrong getting ps variables
+
+This just means that the process died betwee the time @PACKAGE@ first
+saw the existence of the process and the time that it queried
+variables.
+
+=head1 SEE ALSO
+
+See also L<ps(1)> and L<syslogd(8)>.
+
+Another cool program doing ps-like things is C<xps>. Well okay, it's
+another program I distributed. It shows the process tree dynamically
+updated using X Motif and tries to display the output "attractively"
+but fast. You can the find the homepage at
+L<http://motif-pstree.sourceforge.net> and it download via
+L<http://prdownloads.sourceforge.net/motif-pstree?sort_by=date&sort=desc>
+
+=head1 AUTHOR
+
+Rocky Bernstein (rocky@cpan.org)
+
+=head1 COPYRIGHT
+
+  Copyright (C) 2000, 2002, 2003, 2004, 2005, 2006
+  Rocky Bernstein, email: rocky@cpan.org.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.

@@ -1,0 +1,80 @@
+#!@PERL@ -w
+# -*- Perl -*-
+# $Id: post-configure.in,v 1.10 2006/03/10 19:07:05 rockyb Exp $
+require 5.006;
+sub touch_file($);
+
+$program='@PACKAGE@';
+#
+# Do we have a version of perl that we can work with? 
+# 
+printf "You have of Perl %s\n", $];
+
+# 
+# Do we have all the packages we need? 
+#
+print "Checking to see that you have all library modules installed...\n";
+@needed_packages = ('Sys::Syslog', 
+		    # 'IPC::Open3', # -- to simultate `cmd` better
+		    'File::Basename', 
+		    'Config::IniFiles',  
+		    'Getopt::Long',
+		    'Pod::Text'
+		    );
+foreach $package (@needed_packages) {
+  unless (eval "require $package") {
+    die "Need package \"$package\": $@";
+  }
+  print "   $package is installed\n";
+}
+
+#
+# 
+#
+print "Checking what to put after #! at the top of $program...";
+$startperl = `@PERL@ -V:startperl`; 
+if ($startperl =~ /^startperl=\'#!(.*)\'\;$/) {
+  $perlpath = $1;
+  print "$perlpath\n";
+} else {
+  $perlpath = '';
+  print STDERR "\nCan't determine what to put after #! in $program\n";
+  print STDERR "Change the top of the program or arrange for perl to\n";
+  print STDERR "execute it.\n";
+}
+
+print "Rewriting $program.in into $program...";
+die "Cannot read $program.in: $!" if !open(INPUT, "<$program.in");
+die "Cannot write $program: $!"   if !open(OUTPUT, ">$program");
+if (!$perlpath) {
+  print OUTPUT "# Customize this line, for example:\n#!/usr/bin/perl -w\n";
+} else {
+  print OUTPUT "#!$perlpath -w\n";
+}
+@OUTPUT = <INPUT>;
+shift @OUTPUT; # Remove old 1st line.
+print OUTPUT @OUTPUT;
+print "\n";
+close(OUTPUT);
+chmod 0755, $program;
+
+# Touch a timestamp to record that we've created this $program
+# from $program.in. If we later modify $program (which is convenient
+# during debugging), we will know to copy that back to $program.in,
+# the version that get's checked into CVS.
+touch_file("./${program}.stamp");
+exit;
+
+sub touch_file($) {
+    my $file_name = $_[0];
+    if (-e $file_name) {
+	my $now = time();
+	my $count = utime $now, $now, $file_name;
+	exit ($count != 1);
+    } else {
+	open(FILE, ">", $file_name) || die "Can't open $file_name: $!";
+	close(FILE);
+	exit $?;
+    }
+}
+
