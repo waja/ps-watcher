@@ -82,7 +82,7 @@ binary-arch: build install
 #	dh_install
 #	dh_installdebconf	
 #	dh_installlogrotate
-	dh_installinit
+	dh_installinit -- defaults 40
 	dh_installman
 	dh_link
 	dh_strip
