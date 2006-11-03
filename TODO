@@ -1,0 +1,12 @@
+AIX and Linux ps allow custom output lines which means we can enclose
+fields in quotes and thus allow variables which have embedded
+blanks. Should make use of that.
+
+For now we only can handle one configuration file.  Should allow many.
+
+Use IPC::Open3? -- it preserves STDERR and STDOUT. Backtick (`cmd`)
+doesn't seem to.
+
+Add more regression tests.
+
+$Id: TODO,v 1.7 2003/07/10 11:50:21 rockyb Exp $
