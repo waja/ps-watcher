@@ -35,7 +35,7 @@ build-stamp: config.status
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp 
+	rm -f build-stamp
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
@@ -46,12 +46,12 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/ps-watcher.
@@ -66,8 +66,8 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs ChangeLog
-	dh_installdocs 
-	dh_installexamples samples/* 
+	dh_installdocs
+	dh_installexamples samples/*
 	dh_installinit -- defaults 40
 	dh_link
 	dh_strip
