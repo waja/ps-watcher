@@ -4,4 +4,4 @@
 
 # Additional options that are passed to the Daemon.
 # here: specify config file, daemon mode, check every 150 secs
-DAEMON_OPTS="-c /etc/ps-watcher.conf --daemon --sleep 150""
+DAEMON_OPTS="-c /etc/ps-watcher.conf --daemon --sleep 150"
