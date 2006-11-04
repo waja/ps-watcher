@@ -56,7 +56,6 @@ binary-arch: build install
 	dh_installexamples samples/*
 	dh_installinit -- defaults 40
 	dh_link
-	dh_strip
 	dh_compress
 	dh_fixperms
 	dh_perl
