@@ -2,9 +2,6 @@
 # sourced by /etc/init.d/ps-watcher
 # installed at /etc/default/ps-watcher by the maintainer scripts
 
-#
-# This is a POSIX shell fragment
-#
-
 # Additional options that are passed to the Daemon.
-DAEMON_OPTS=""
+# here: specify config file, daemon mode, check every 150 secs
+DAEMON_OPTS="-c /etc/ps-watcher.conf --daemon --sleep 150""

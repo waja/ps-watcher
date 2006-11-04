@@ -37,7 +37,6 @@ build-stamp:  config.status
 
 	# Add here commands to compile the package.
 	$(MAKE)
-	#docbook-to-man debian/ps-watcher.sgml > ps-watcher.1
 
 	touch $@
 
@@ -79,9 +78,6 @@ binary-arch: build install
 	dh_installchangelogs ChangeLog
 	dh_installdocs 
 	dh_installexamples samples/* 
-#	dh_install
-#	dh_installdebconf	
-#	dh_installlogrotate
 	dh_installinit -- defaults 40
 	dh_installman
 	dh_link

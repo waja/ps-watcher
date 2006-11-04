@@ -3,4 +3,3 @@ ps-watcher (1.06-1) unstable; urgency=low
   * Initial release (Closes: #396953) 
 
  -- Jan Wagner <waja@cyconet.org>  Fri,  3 Nov 2006 13:39:48 +0000
-
