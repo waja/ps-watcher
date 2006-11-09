@@ -47,7 +47,7 @@ not_configured () {
 if [ -f "/etc/default/pswatcher" ]
 then
         . /etc/default/ps-watcher
-        if [ "$startup" != "1" ] || [ -f $CONFIG ]
+        if [ "$startup" != "1" ] || [ ! -f $CONFIG ]
         then
                 not_configured
         fi
