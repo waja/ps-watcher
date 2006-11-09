@@ -1,0 +1,17 @@
+ps-watcher for Debian
+---------------------
+
+1. PROVIDE A CONFIGFILE
+-----------------------
+
+Please provide a config file, usualy /etc/ps-watcher.conf. Examples are
+located in /usr/share/doc/ps-watcher/examples/.
+
+2. AUTOMATIC STARTUP
+--------------------
+
+In order to avoid the startup of the daemon on an unconfigured machine,
+automatic startup, on boot, is disabled by default. To enable it just edit the
+file /etc/default/ps-watcher and set the "startup" variable to 1.
+
+ -- Jan Wagner <waja@cyconet.org>  Wed,  8 Nov 2006 22:44:24 +0100

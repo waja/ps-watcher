@@ -30,11 +30,37 @@ fi
 
 set -e
 
+not_configured () {
+        echo "#### WARNING ####"
+        echo "ps-watcher won't be started/stopped unless it is configured"
+        if [ "$1" != "stop" ]
+        then
+                echo ""
+                echo "Please pease provide a configfile!"
+                echo "See /usr/share/doc/ps-watcher/README.Debian.gz."
+        fi
+        echo "#################"
+        exit 0
+}
+
+# check if ps-watcher is configured or not
+if [ -f "/etc/default/pswatcher" ]
+then
+        . /etc/default/ps-watcher
+        if [ "$startup" != "1" ] || [ -f $CONFIG ]
+        then
+                not_configured
+        fi
+else
+        not_configured
+fi
+
+
 case "$1" in
   start)
 	echo -n "Starting $DESC: "
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
-		--exec $DAEMON -- $DAEMON_OPTS
+		--exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
 	echo "$NAME."
 	;;
   stop)
@@ -45,11 +71,11 @@ case "$1" in
 	;;
   restart|force-reload)
 	echo -n "Restarting $DESC: "
-	start-stop-daemon --stop --quiet --pidfile \
-		/var/run/$NAME.pid --exec $DAEMON
+	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \ 
+		--exec $DAEMON
 	sleep 1
-	start-stop-daemon --start --quiet --pidfile \
-		/var/run/$NAME.pid --exec $DAEMON -- $DAEMON_OPTS
+	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+		 --exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
 	echo "$NAME."
 	;;
   *)
