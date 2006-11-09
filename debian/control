@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 
 Package: ps-watcher
 Architecture: all
-Depends: ${perl:Depends}
+Depends: ${perl:Depends}, libconfig-inifiles-perl, libsys-syslog-perl
 Description: monitoring a system via ps-like commands
  This program runs the ps command periodically and triggers commands on matches.
  The match patterns are Perl regular expressions which can refer to the process
