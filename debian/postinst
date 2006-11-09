@@ -6,7 +6,6 @@ then
 fi
 
 if [ -x "/etc/init.d/ps-watcher" ]; then
-        update-rc.d ps-watcher defaults 40 >/dev/null
 	if [ "$startup" = "1" ] && [ -f $CONFIG ]; then
         	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
                 	invoke-rc.d ps-watcher start || exit $?
