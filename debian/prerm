@@ -5,10 +5,12 @@ then
         . /etc/default/ps-watcher
 fi
 
-if [ -x "/etc/init.d/ps-watcher" ] && [ "$startup" == "1" ] && [ -f $CONFIG ]; then
+if [ -x "/etc/init.d/ps-watcher" ] && [ "$startup" = "1" ] && [ -f $CONFIG ]; then
         if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
                 invoke-rc.d ps-watcher stop || exit $?
         else
                 /etc/init.d/ps-watcher stop || exit $?
         fi
 fi
+
+#DEBHELPER#
