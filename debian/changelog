@@ -1,8 +1,8 @@
-ps-watcher (1.06-3) UNRELEASED; urgency=low
+ps-watcher (1.06-3) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * moved from binary-arch to binary-indep
 
- -- Jan Wagner <waja@localhost>  Thu,  9 Nov 2006 14:08:15 +0100
+ -- Jan Wagner <waja@cyconet.org>  Thu,  9 Nov 2006 14:08:15 +0100
 
 ps-watcher (1.06-2) unstable; urgency=low
 
