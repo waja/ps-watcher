@@ -14,4 +14,11 @@ In order to avoid the startup of the daemon on an unconfigured machine,
 automatic startup, on boot, is disabled by default. To enable it just edit the
 file /etc/default/ps-watcher and set the "startup" variable to 1.
 
+3. POSITION IN STARTUP SCRIPTS
+------------------------------
+
+If you want to keep track on daemon (restart if not running any more), you
+should start ps-watcher on startup after all daemons running and stop at first
+on shutdown. You can use update-rc.d to updated the postition in start-scripts.
+
  -- Jan Wagner <waja@cyconet.org>  Wed,  8 Nov 2006 22:44:24 +0100
