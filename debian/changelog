@@ -1,3 +1,10 @@
+ps-watcher (1.06-4) unstable; urgency=low
+
+  * moved libsys-syslog-perl from Depends to Recommands since Sys::Syslog is
+    also provided by perl
+
+ -- Jan Wagner <waja@cyconet.org>  Tue, 28 Nov 2006 12:01:46 +0100
+
 ps-watcher (1.06-3) unstable; urgency=low
 
   * moved from binary-arch to binary-indep
