@@ -1,4 +1,4 @@
-ps-watcher (1.06-4) unstable; urgency=low
+ps-watcher (1.06-4) unstable; urgency=medium
 
   * moved libsys-syslog-perl from Depends to Recommands and removed from
     Builddeps since Sys::Syslog is also provided by perl
