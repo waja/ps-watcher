@@ -1,3 +1,9 @@
+ps-watcher (1.06-6) unstable; urgency=medium
+
+  * fix prerm and postinst to prevent trouble when updating
+
+ -- Jan Wagner <waja@cyconet.org>  Thu,  8 Mar 2007 09:20:58 +0100
+
 ps-watcher (1.06-5) unstable; urgency=medium
 
   * fix typo in init script which prevents from start
