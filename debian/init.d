@@ -44,7 +44,7 @@ not_configured () {
 }
 
 # check if ps-watcher is configured or not
-if [ -f "/etc/default/pswatcher" ]
+if [ -f "/etc/default/ps-watcher" ]
 then
         . /etc/default/ps-watcher
         if [ "$startup" != "1" ] || [ ! -f $CONFIG ]
