@@ -1,3 +1,9 @@
+ps-watcher (1.06-5) unstable; urgency=medium
+
+  * fix typo in init script which prevents from start
+
+ -- Jan Wagner <waja@cyconet.org>  Wed, 28 Feb 2007 23:00:39 +0100
+
 ps-watcher (1.06-4) unstable; urgency=medium
 
   * moved libsys-syslog-perl from Depends to Recommands and removed from
