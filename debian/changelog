@@ -1,3 +1,12 @@
+ps-watcher (1.06-7~unreleased.1) unstable; urgency=low
+
+  * update copyright
+  * use native debhelper postinst script
+  * fix debhelper prerm script 
+  * fix stop) in init script
+
+ -- Jan Wagner <waja@cyconet.org>  Thu,  8 Mar 2007 11:26:57 +0100
+
 ps-watcher (1.06-6) unstable; urgency=medium
 
   * fix prerm and postinst to prevent trouble when updating
