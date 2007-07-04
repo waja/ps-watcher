@@ -61,22 +61,23 @@ case "$1" in
 	echo -n "Starting $DESC: "
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		--exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
+	ps aux | grep $DAEMON | head -1 | awk '{ print $2 }' > /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   stop)
 	echo -n "Stopping $DESC: "
 	#start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
 	#	--exec $DAEMON
-	killall -9 $NAME
 	echo "$NAME."
 	;;
   restart|force-reload)
 	echo -n "Restarting $DESC: "
-	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \ 
+	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
 		--exec $DAEMON
 	sleep 1
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		 --exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
+	ps aux | grep $DAEMON | head -1 | awk '{ print $2 }' > /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   *)
