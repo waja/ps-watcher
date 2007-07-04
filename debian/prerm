@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-if [ -x "/etc/init.d/ps-watcher" ]; then
-#        if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-#                invoke-rc.d ps-watcher stop || true
-#        else
-                /etc/init.d/ps-watcher stop && true
-#        fi
-fi
