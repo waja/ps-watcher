@@ -1,8 +1,9 @@
 ps-watcher (1.06-7) unstable; urgency=low
 
   * update copyright
-  * use native debhelper postinst and prerm script
+  * use native debhelper postinst script
   * make start-stop-daemon working instead of using kill
+  * providing upgrade path via prerm
 
  -- Jan Wagner <waja@cyconet.org>  Wed,  4 Jul 2007 12:26:57 +0200
 
