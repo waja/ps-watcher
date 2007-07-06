@@ -66,8 +66,8 @@ case "$1" in
 	;;
   stop)
 	echo -n "Stopping $DESC: "
-	#start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
-	#	--exec $DAEMON
+	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
+		--exec $DAEMON
 	echo "$NAME."
 	;;
   restart|force-reload)
