@@ -1,3 +1,9 @@
+ps-watcher (1.06-8) unstable; urgency=low
+
+  * fix clean target in rules 
+
+ -- Jan Wagner <waja@cyconet.org>  Thu, 08 Nov 2007 09:25:25 +0100
+
 ps-watcher (1.06-7) unstable; urgency=low
 
   * update copyright
