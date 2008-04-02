@@ -2,7 +2,7 @@ Source: ps-watcher
 Section: admin
 Priority: extra
 Maintainer: Jan Wagner <waja@cyconet.org>
-Build-Depends: debhelper (>= 5), autotools-dev
+Build-Depends: debhelper (>= 5), autotools-dev, dpatch
 Build-Depends-Indep: libconfig-inifiles-perl, perl-modules
 Homepage: http://ps-watcher.sourceforge.net/
 Vcs-Browser: https://trac.cyconet.org/debian/browser/debian/ps-watcher

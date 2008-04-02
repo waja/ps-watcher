@@ -4,7 +4,9 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-config.status: configure
+include /usr/share/dpatch/dpatch.make
+
+config.status: patch-stamp configure
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man
@@ -18,7 +20,7 @@ build-stamp: config.status
 
 	touch $@
 
-clean:
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
