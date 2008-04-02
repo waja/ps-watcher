@@ -61,28 +61,24 @@ case "$1" in
 	echo -n "Starting $DESC: "
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		--exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
-	ps aux | grep $DAEMON | head -1 | awk '{ print $2 }' > /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   stop)
 	echo -n "Stopping $DESC: "
-	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
-		--exec $DAEMON
+	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   restart|force-reload)
 	echo -n "Restarting $DESC: "
-	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
-		--exec $DAEMON
+	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid
 	sleep 1
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		 --exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
-	ps aux | grep $DAEMON | head -1 | awk '{ print $2 }' > /var/run/$NAME.pid
+	/bin/pidof $DAEMON > /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   *)
 	N=/etc/init.d/$NAME
-	# echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
 	echo "Usage: $N {start|stop|restart|force-reload}" >&2
 	exit 1
 	;;
