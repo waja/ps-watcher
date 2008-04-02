@@ -1,13 +1,16 @@
 ps-watcher (1.06-9) unstable; urgency=low
 
   * added Vcs- fields, moved Homepage into source header's field
-  * bump standards version to 3.7.3 
+  * bump standards version to 3.7.3 (no changes needed)
+  * change Priority to extra since libconfig-inifiles-perl is also extra and
+    we depend on it
+  * remove whitespaces trailing whitespaces from changelog
 
  -- Jan Wagner <waja@cyconet.org>  Sun, 09 Dec 2007 23:12:51 +0100
 
 ps-watcher (1.06-8) unstable; urgency=low
 
-  * fix clean target in rules 
+  * fix clean target in rules
 
  -- Jan Wagner <waja@cyconet.org>  Thu, 08 Nov 2007 09:25:25 +0100
 
@@ -48,7 +51,7 @@ ps-watcher (1.06-3) unstable; urgency=low
 ps-watcher (1.06-2) unstable; urgency=low
 
   * remove dh_strip from rules
-  * adjust depencies (libconfig-inifiles-perl, libsys-syslog-perl) 
+  * adjust depencies (libconfig-inifiles-perl, libsys-syslog-perl)
   * modifying initscript to prevent to start without config file
   * provide own postinst and prerm scripts
 
