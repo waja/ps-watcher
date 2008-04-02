@@ -9,8 +9,9 @@ ps-watcher (1.06-9) unstable; urgency=low
   * add 01_add_pidfile_support.dpatch to implement writing pidfiles into the
     daemon
   * adjust init script since the daemon supports writing pidfiles
+  * make use of pidof in preinst
 
- -- Jan Wagner <waja@cyconet.org>  Sun, 09 Dec 2007 23:12:51 +0100
+ -- Jan Wagner <waja@cyconet.org>  Thu, 03 Apr 2008 00:00:34 +0200
 
 ps-watcher (1.06-8) unstable; urgency=low
 
