@@ -1,3 +1,9 @@
+ps-watcher (1.06-10) UNRELEASED; urgency=low
+
+  * bump copyright of packaging to 2008
+
+ -- Jan Wagner <waja@localhost>  Thu, 03 Apr 2008 10:29:21 +0200
+
 ps-watcher (1.06-9) unstable; urgency=low
 
   * added Vcs- fields, moved Homepage into source header's field
