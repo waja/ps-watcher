@@ -1,8 +1,9 @@
 ps-watcher (1.06-10) UNRELEASED; urgency=low
 
   * bump copyright of packaging to 2008
+  * Updating standards version to 3.8.0, no changes needed
 
- -- Jan Wagner <waja@localhost>  Thu, 03 Apr 2008 10:29:21 +0200
+ -- Jan Wagner <waja@cyocnet.org>  Thu, 03 Apr 2008 10:29:21 +0200
 
 ps-watcher (1.06-9) unstable; urgency=low
 
