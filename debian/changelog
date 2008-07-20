@@ -4,6 +4,10 @@ ps-watcher (1.06-10) unstable; urgency=low
   * Updating standards version to 3.8.0, no changes needed
   * implement machine-interpretable copyright file
   * move autotools-dev to Build-Depends-Indep
+  * cleanup rules a bit
+  * create lintian override for "outdated-autotools-helper-file", which we
+    copy over from autotools-dev
+  * add ${misc:Depends} to Depends
 
  -- Jan Wagner <waja@cyconet.org>  Sun, 20 Jul 2008 13:43:55 +0200
 
