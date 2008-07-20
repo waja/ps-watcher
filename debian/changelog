@@ -3,8 +3,9 @@ ps-watcher (1.06-10) unstable; urgency=low
   * bump copyright of packaging to 2008
   * Updating standards version to 3.8.0, no changes needed
   * implement machine-interpretable copyright file
+  * move autotools-dev to Build-Depends-Indep
 
- -- Jan Wagner <waja@cyocnet.org>  Sun, 20 Jul 2008 13:43:55 +0200
+ -- Jan Wagner <waja@cyconet.org>  Sun, 20 Jul 2008 13:43:55 +0200
 
 ps-watcher (1.06-9) unstable; urgency=low
 
