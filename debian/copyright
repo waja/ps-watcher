@@ -1,14 +1,19 @@
-This package was debianized by Jan Wagner <waja@cyconet.org> on
-Fri,  3 Nov 2006 14:39:48 +0100.
+Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat?action=recall&rev=196
+Packaged-By: Jan Wagner <waja@cyconet.org>
+Packaged-Date: Fri,  3 Nov 2006 14:39:48 +0100
+Upstream-Name: ps-watcher
+Upstream-Maintainer: Rocky Bernstein <rocky@panix.com>
+Upstream-Source: http://ps-watcher.sf.net
 
-It was downloaded from <http://sf.net/ps-watcher/>
-
-Upstream Author: Rocky Bernstein <rocky@panix.com>
-
+Files: *
 Copyright: (C) 2000-2006 Rocky Bernstein <rocky@panix.com>
+License: GPL-2+
 
-License:
+Files: debian/*
+Copyright: (C) 2006, 2008 Jan Wagner <waja@cyconet.org>
+License: GPL-2+
 
+License: GPL-2+
         This program is free software; you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
         the Free Software Foundation; either version 2 of the License, or
@@ -23,8 +28,5 @@ License:
         along with this program; if not, write to the Free Software
         Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
-On Debian systems, the complete text of the GNU General Public License
-can be found in /usr/share/common-licenses/GPL file.
-
-The Debian packaging is (C) 2006-2008 Jan Wagner <waja@cyconet.org> and
-is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+ On Debian systems, the complete text of the GNU General Public License can be
+ found in /usr/share/common-licenses/GPL-2 file.
