@@ -1,3 +1,9 @@
+ps-watcher (1.06-11) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Jan Wagner <waja@cyconet.org>  Sun, 20 Jul 2008 15:46:37 +0200
+
 ps-watcher (1.06-10) unstable; urgency=low
 
   * bump copyright of packaging to 2008
