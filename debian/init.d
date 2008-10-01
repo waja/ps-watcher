@@ -74,7 +74,6 @@ case "$1" in
 	sleep 1
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		 --exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
-	/bin/pidof $DAEMON > /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   *)
