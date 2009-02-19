@@ -1,3 +1,12 @@
+ps-watcher (1.07-1) unstable; urgency=low
+
+  * new upstream release
+    - improve logfile handling
+    - new sample config file using perl-action
+    - minor typo fixes
+
+ -- Jan Wagner <waja@cyconet.org>  Thu, 19 Feb 2009 17:24:47 +0100
+
 ps-watcher (1.06-11) unstable; urgency=low
 
   * removed use of pidof from restart|force-reload init-script target,
