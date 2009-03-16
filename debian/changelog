@@ -1,6 +1,9 @@
-ps-watcher (1.07-2) UNRELEASED; urgency=low
+ps-watcher (1.08-1) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * new upstream release
+    - pidfile support
+    - darwin support
+  * remove dpatch infrastructure
 
  -- Jan Wagner <waja@cyconet.org>  Thu, 19 Feb 2009 17:31:31 +0100
 
