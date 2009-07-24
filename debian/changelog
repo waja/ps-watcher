@@ -7,6 +7,7 @@ ps-watcher (1.08-1) unstable; urgency=low
   * moved initscritps to S99 and K01, thanks Tim Miller Dyck (Closes: #508189)
   * created NEWS.Debian
   * bump standards version to 3.8.2 (no changes needed)
+  * calling pidof in preinst without absolut path
 
  -- Jan Wagner <waja@cyconet.org>  Fri, 24 Jul 2009 19:12:00 +0200
 
