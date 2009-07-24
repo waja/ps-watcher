@@ -2,11 +2,7 @@
 
 set -e
 
-if [ "$1" != "configure" ]; then
-	exit 0
-fi
-
-if [ "$2" ] && dpkg --compare-versions "$2" lt "1.08-1"; then
+if [ "$1" = "configure" ] && [ "$2" ] && dpkg --compare-versions "$2" lt "1.08-1"; then
     if [ -e /etc/rc2.d/S40ps-watcher ] && \
        [ -e /etc/rc3.d/S40ps-watcher ] && \
        [ -e /etc/rc4.d/S40ps-watcher ] && \
