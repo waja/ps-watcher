@@ -1,11 +1,13 @@
-ps-watcher (1.08-1) UNRELEASED; urgency=low
+ps-watcher (1.08-1) unstable; urgency=low
 
   * new upstream release
     - pidfile support
     - darwin support
   * remove dpatch infrastructure
+  * moved initscritps to S99 and K01, thanks Tim Miller Dyck (Closes: #508189)
+  * created NEWS.Debian
 
- -- Jan Wagner <waja@cyconet.org>  Thu, 19 Feb 2009 17:31:31 +0100
+ -- Jan Wagner <waja@cyconet.org>  Fri, 24 Jul 2009 19:12:00 +0200
 
 ps-watcher (1.07-1) unstable; urgency=low
 

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" != "configure" ]; then
+	exit 0
+fi
+
+if [ "$2" ] && dpkg --compare-versions "$2" lt "1.08-1"; then
+    if [ -e /etc/rc2.d/S40ps-watcher ] && \
+       [ -e /etc/rc3.d/S40ps-watcher ] && \
+       [ -e /etc/rc4.d/S40ps-watcher ] && \
+       [ -e /etc/rc5.d/S40ps-watcher ] && \
+       [ -e /etc/rc0.d/K40ps-watcher ] && \
+       [ -e /etc/rc1.d/K40ps-watcher ] && \
+       [ -e /etc/rc6.d/K40ps-watcher ]; then
+        update-rc.d -f ps-watcher remove >/dev/null
+    fi
+fi
+
+#DEBHELPER#
