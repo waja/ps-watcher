@@ -6,11 +6,11 @@ Upstream-Maintainer: Rocky Bernstein <rocky@panix.com>
 Upstream-Source: http://ps-watcher.sf.net
 
 Files: *
-Copyright: (C) 2000-2006 Rocky Bernstein <rocky@panix.com>
+Copyright: Copyright (C) 2000-2006 Rocky Bernstein <rocky@panix.com>
 License: GPL-2+
 
 Files: debian/*
-Copyright: (C) 2006, 2008 Jan Wagner <waja@cyconet.org>
+Copyright: Copyright (C) 2006, 2008 Jan Wagner <waja@cyconet.org>
 License: GPL-2+
 
 License: GPL-2+
