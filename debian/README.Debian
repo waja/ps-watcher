@@ -4,7 +4,7 @@ ps-watcher for Debian
 1. PROVIDE A CONFIGFILE
 -----------------------
 
-Please provide a config file, usualy /etc/ps-watcher.conf. Examples are
+Please provide a config file, usually /etc/ps-watcher.conf. Examples are
 located in /usr/share/doc/ps-watcher/examples/.
 
 2. AUTOMATIC STARTUP

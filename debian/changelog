@@ -4,6 +4,7 @@ ps-watcher (1.08-2) UNRELEASED; urgency=low
   * Bump Standards-Version to 3.8.4, no changes needed
   * Migrate Vcs-Fields over to scm.uncompleted.org
   * Add 1.0 to debian/source/format
+  * refer README.Debian* in initscript (Closes: #523405)
 
  -- Jan Wagner <waja@cyconet.org>  Fri, 24 Jul 2009 20:15:50 +0200
 

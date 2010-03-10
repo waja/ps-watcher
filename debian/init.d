@@ -37,7 +37,7 @@ not_configured () {
         then
                 echo ""
                 echo "Please pease provide a configfile!"
-                echo "See /usr/share/doc/ps-watcher/README.Debian.gz."
+                echo "See /usr/share/doc/ps-watcher/README.Debian*."
         fi
         echo "#################"
         exit 0
