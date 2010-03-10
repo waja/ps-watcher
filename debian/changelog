@@ -1,4 +1,4 @@
-ps-watcher (1.08-2) UNRELEASED; urgency=low
+ps-watcher (1.08-2) unstable; urgency=low
 
   * Add "Copyright" to all copyrights in debian/copyright
   * Bump Standards-Version to 3.8.4, no changes needed
@@ -6,7 +6,7 @@ ps-watcher (1.08-2) UNRELEASED; urgency=low
   * Add 1.0 to debian/source/format
   * refer README.Debian* in initscript (Closes: #523405)
 
- -- Jan Wagner <waja@cyconet.org>  Fri, 24 Jul 2009 20:15:50 +0200
+ -- Jan Wagner <waja@cyconet.org>  Wed, 10 Mar 2010 12:44:44 +0100
 
 ps-watcher (1.08-1) unstable; urgency=low
 
