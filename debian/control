@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 5)
 Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl, perl-modules
 Homepage: http://ps-watcher.sourceforge.net/
 Vcs-Browser: https://scm.uncompleted.org/projects/debian/repository/show/ps-watcher
-Vcs-Svn: https://scm.uncompleted.org/svn/debian/ps-watcher
+Vcs-Svn: https://scm.uncompleted.org/svn/debian/ps-watcher/trunk
 Standards-Version: 3.8.4
 
 Package: ps-watcher
