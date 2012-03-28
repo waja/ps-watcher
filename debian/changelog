@@ -1,8 +1,67 @@
-ps-watcher (1.06-10) UNRELEASED; urgency=low
+ps-watcher (1.08-3) unstable; urgency=low
+
+  * Bump Standards-Version to 3.9.3, no changes needed
+  * Raise debhelper version to 9
+  * Switch packaging format to "3.0 (quilt)"
+  * Add build-arch and build-indep targets to debian/rules
+  * Add patches/ps_binary to set ps_prog to "/bin/ps", thank to Gregory Davis
+    (Closes: 645791)
+
+ -- Jan Wagner <waja@cyconet.org>  Wed, 28 Mar 2012 08:53:20 +0200
+
+ps-watcher (1.08-2) unstable; urgency=low
+
+  * Add "Copyright" to all copyrights in debian/copyright
+  * Bump Standards-Version to 3.8.4, no changes needed
+  * Migrate Vcs-Fields over to scm.uncompleted.org
+  * Add 1.0 to debian/source/format
+  * refer README.Debian* in initscript (Closes: #523405)
+
+ -- Jan Wagner <waja@cyconet.org>  Wed, 10 Mar 2010 12:44:44 +0100
+
+ps-watcher (1.08-1) unstable; urgency=low
+
+  * new upstream release
+    - pidfile support
+    - darwin support
+  * remove dpatch infrastructure
+  * moved initscritps to S99 and K01, thanks Tim Miller Dyck (Closes: #508189)
+  * created NEWS.Debian
+  * bump standards version to 3.8.2 (no changes needed)
+  * calling pidof in preinst without absolute path
+  * adjust lintian overrides for config* files
+
+ -- Jan Wagner <waja@cyconet.org>  Fri, 24 Jul 2009 19:12:00 +0200
+
+ps-watcher (1.07-1) unstable; urgency=low
+
+  * new upstream release
+    - improve logfile handling
+    - new sample config file using perl-action
+    - minor typo fixes
+
+ -- Jan Wagner <waja@cyconet.org>  Thu, 19 Feb 2009 17:24:47 +0100
+
+ps-watcher (1.06-11) unstable; urgency=low
+
+  * removed use of pidof from restart|force-reload init-script target,
+    since daemon has pidfile support and it never worked anyways
+    (Closes: #500741)
+
+ -- Jan Wagner <waja@cyconet.org>  Wed, 01 Oct 2008 11:05:25 +0200
+
+ps-watcher (1.06-10) unstable; urgency=low
 
   * bump copyright of packaging to 2008
+  * Updating standards version to 3.8.0, no changes needed
+  * implement machine-interpretable copyright file
+  * move autotools-dev to Build-Depends-Indep
+  * cleanup rules a bit
+  * create lintian override for "outdated-autotools-helper-file", which we
+    copy over from autotools-dev
+  * add ${misc:Depends} to Depends
 
- -- Jan Wagner <waja@localhost>  Thu, 03 Apr 2008 10:29:21 +0200
+ -- Jan Wagner <waja@cyconet.org>  Sun, 20 Jul 2008 13:43:55 +0200
 
 ps-watcher (1.06-9) unstable; urgency=low
 

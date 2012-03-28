@@ -1,0 +1,10 @@
+ps-watcher (1.08-1) unstable; urgency=low
+
+  * moved startup to the end of the boot process and terminating to the
+    beginning of the shutdown process
+
+    If you modified the order of ps-watcher runlevel scripts for your own, this
+    adjustment will not happen automatically and you have to handle it for
+    yourself.
+
+ -- Jan Wagner <waja@cyconet.org>  Fri, 24 Jul 2009 19:16:09 +0200
