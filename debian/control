@@ -11,7 +11,7 @@ Standards-Version: 3.9.3
 
 Package: ps-watcher
 Architecture: all
-Depends: ${perl:Depends}, ${misc:Depends}, libconfig-inifiles-perl
+Depends: ${perl:Depends}, ${misc:Depends}, libconfig-inifiles-perl, procps
 Recommends: libsys-syslog-perl
 Description: monitoring a system via ps-like commands
  This program runs the ps command periodically and triggers commands on matches.
