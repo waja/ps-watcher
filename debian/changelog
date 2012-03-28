@@ -4,6 +4,8 @@ ps-watcher (1.08-3) UNRELEASED; urgency=low
   * Raise debhelper version to 9
   * Switch packaging format to "3.0 (quilt)"
   * Add build-arch and build-indep targets to debian/rules
+  * Add patches/ps_binary to set ps_prog to "/bin/ps", thank to Gregory Davis
+    (Closes: 645791)
 
  -- Jan Wagner <waja@cyconet.org>  Wed, 10 Mar 2010 12:47:29 +0100
 
