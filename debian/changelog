@@ -1,4 +1,4 @@
-ps-watcher (1.08-3) UNRELEASED; urgency=low
+ps-watcher (1.08-3) unstable; urgency=low
 
   * Bump Standards-Version to 3.9.3, no changes needed
   * Raise debhelper version to 9
@@ -7,7 +7,7 @@ ps-watcher (1.08-3) UNRELEASED; urgency=low
   * Add patches/ps_binary to set ps_prog to "/bin/ps", thank to Gregory Davis
     (Closes: 645791)
 
- -- Jan Wagner <waja@cyconet.org>  Wed, 10 Mar 2010 12:47:29 +0100
+ -- Jan Wagner <waja@cyconet.org>  Wed, 28 Mar 2012 08:53:20 +0200
 
 ps-watcher (1.08-2) unstable; urgency=low
 
