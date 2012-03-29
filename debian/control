@@ -2,16 +2,16 @@ Source: ps-watcher
 Section: admin
 Priority: extra
 Maintainer: Jan Wagner <waja@cyconet.org>
-Build-Depends: debhelper (>= 5), autotools-dev, dpatch
-Build-Depends-Indep: libconfig-inifiles-perl, perl-modules
+Build-Depends: debhelper (>= 9)
+Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl, perl-modules
 Homepage: http://ps-watcher.sourceforge.net/
-Vcs-Browser: https://trac.cyconet.org/debian/browser/debian/ps-watcher
-Vcs-Svn: https://trac.cyconet.org/svn/debian/ps-watcher
-Standards-Version: 3.7.3
+Vcs-Browser: https://scm.uncompleted.org/projects/debian/repository/show/ps-watcher
+Vcs-Svn: https://scm.uncompleted.org/svn/debian/ps-watcher/trunk
+Standards-Version: 3.9.3
 
 Package: ps-watcher
 Architecture: all
-Depends: ${perl:Depends}, libconfig-inifiles-perl
+Depends: ${perl:Depends}, ${misc:Depends}, libconfig-inifiles-perl, procps
 Recommends: libsys-syslog-perl
 Description: monitoring a system via ps-like commands
  This program runs the ps command periodically and triggers commands on matches.

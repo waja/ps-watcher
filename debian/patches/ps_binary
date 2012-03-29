@@ -1,0 +1,15 @@
+From: Jan Wagner <waja@cyconet.org>
+Subject: Patch path of ps, so we don't need to have the binary installed on compiletime
+Index: ps-watcher-1.08/ps-watcher.in.in
+===================================================================
+--- ps-watcher-1.08.orig/ps-watcher.in.in	2012-03-28 08:37:45.000000000 +0200
++++ ps-watcher-1.08/ps-watcher.in.in	2012-03-28 08:38:13.000000000 +0200
+@@ -339,7 +339,7 @@
+   $opts{syslog}       = 1;  # Log errors to syslog
+   $opts{logfile}      = $DEVNULL;  
+   $opts{daemon}       = 1;  # Run as daemon;
+-  $opts{ps_prog}      = '@PS@';   # Where is ps? 
++  $opts{ps_prog}      = '/bin/ps';   # Where is ps? 
+   $opts{ps_pid_opts}  = '@PS_PID_OPTS@';   # How do I get pids and commands?
+ 
+   $ps_arg_opts  = '@PS_ARGS@';       # How do I get full process command?

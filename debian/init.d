@@ -37,7 +37,7 @@ not_configured () {
         then
                 echo ""
                 echo "Please pease provide a configfile!"
-                echo "See /usr/share/doc/ps-watcher/README.Debian.gz."
+                echo "See /usr/share/doc/ps-watcher/README.Debian*."
         fi
         echo "#################"
         exit 0
@@ -74,7 +74,6 @@ case "$1" in
 	sleep 1
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		 --exec $DAEMON -- -c $CONFIG --daemon $DAEMON_OPTS
-	/bin/pidof $DAEMON > /var/run/$NAME.pid
 	echo "$NAME."
 	;;
   *)
