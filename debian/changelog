@@ -1,8 +1,8 @@
-ps-watcher (1.08-5) UNRELEASED; urgency=low
+ps-watcher (1.08-5) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * Fix comparation in preinst script, realy (Closes: #666097)
 
- -- Jan Wagner <waja@cyconet.org>  Wed, 28 Mar 2012 19:35:49 +0200
+ -- Jan Wagner <waja@cyconet.org>  Thu, 29 Mar 2012 11:56:23 +0200
 
 ps-watcher (1.08-4) unstable; urgency=low
 
