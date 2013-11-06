@@ -1,0 +1,41 @@
+This directory holds the distribution for ps-watcher, a program for
+montoring a system via ps-like commands.
+
+Short instructions. Type:
+  cd ps-watcher-*
+  make
+
+If make fails you probably need to get IniConf. It it works then...
+
+  ./ps-watcher --nosyslog --log --config ./samples/sample.ini
+
+Read the documentation to understand what you did.
+
+----
+
+Documentation is in docs directory. 
+
+All of the source code is covered by the GNU GENERAL PUBLIC
+LICENSE. See COPYING for details on this.
+
+To use the program you will need Perl version 5.003 or greater 
+installed and the following modules:
+
+   Sys::Syslog
+   File::Basename 
+   Config::IniFiles
+   Getopt::Long 
+
+The only one of these that is not part of the core Perl distribution 
+is Config::IniFiles which can be found at:
+
+http://www.cpan.org/modules/by-module/Config/
+
+In order to run the program you'll need a configuration file to 
+use. Some samples configuration files can be found in the samples 
+directory. See the README in that directory for a description of 
+what the configuration files do.
+
+See INSTALL for generic GNU configure instructions.
+
+$Id: README,v 1.7 2003/05/16 00:12:59 rockyb Exp $
