@@ -1,0 +1,15 @@
+# $Id: full.cnf,v 1.3 2006/03/10 12:47:37 rockyb Exp $
+# Test to see we can match on all of the processes, not 
+# just the ones for our account.
+
+# On a Unix-like system where there always is a pid 1 - init.
+# On there is a ppid of 1.
+[.]
+  occurs  = first-trigger
+  trigger = $ppid == 1
+  action  = echo "ok 1"
+
+[.?]
+  occurs  = every
+  trigger = $pid == 1
+  action  = echo "ok 2"

@@ -1,0 +1,34 @@
+#!@PERL@ -w
+# $Id: full.t.in,v 1.6 2006/03/10 13:12:36 rockyb Exp $
+# Some count checks
+use strict;
+use Test::More;
+use Config;
+
+if ('cygwin' eq $Config{osname}) {
+    plan( tests => 1);
+} else {
+    plan( tests => 2);
+}
+
+my $test='full';
+
+my $srcdir = $ENV{srcdir} ? $ENV{srcdir} : '.';
+my @output = `@PERL@ ../ps-watcher --log --sleep -1 --nodaemon --config ${srcdir}/$test.cnf 2>&1`;
+
+# First line is Id line. This doesn't count in testing.
+shift @output;
+
+my $i=1;
+foreach (@output) {
+  if (/^.+:\s+.*ok/) {
+    s/.+:\s+//;
+    my $result = sprintf "ok %d", $i;
+    $i++;
+    ok($_ =~ m{$result});
+  }  
+}
+
+#;;; Local Variables: ***
+#;;; mode:perl ***
+#;;; End: ***

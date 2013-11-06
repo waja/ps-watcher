@@ -1,0 +1,48 @@
+#!/usr/bin/perl -w
+#$Id: driver,v 1.1 2000/03/27 01:53:24 rocky Exp $
+use strict;
+
+use File::Basename;
+my $program = basename($0); # Who am I today, anyway? 
+
+sub usage {
+  print "
+usage: 
+
+   $program [test1 ... ] 
+   $program --help
+
+Runs regresion tests (via Test::Harness). 
+
+If no tests are specified all tests that match *.t in the
+test directory are run. 
+
+$program --help prints this help.
+";
+
+  exit 100;
+}
+
+use Test::Harness qw(&runtests $verbose);
+
+my $setup = 0;
+process_options();
+
+@ARGV = glob("*.t") if !@ARGV;
+runtests @ARGV;
+exit 0;
+
+# The bane of programming.
+sub process_options {
+  use Getopt::Long;
+  $Getopt::Long::autoabbrev = 1;
+  my $help = 0;
+  
+  my $result = &GetOptions
+    (
+     'help'           => \$help,
+    );
+  usage unless $result;
+  usage if $help;
+}
+
