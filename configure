@@ -2007,7 +2007,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=ps-watcher
- VERSION=1.07
+ VERSION=1.08
 
 
 cat >>confdefs.h <<_ACEOF

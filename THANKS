@@ -13,6 +13,8 @@ James R Grinter <jrg at acm dot org> suggested and provided code to allow the
 program to fire when no matching processes (e.g. when a process that
 should be running has died).
 
+Jan Wagner - Debian packaging and support; pidfile support addition.
+
 Thanks to Jason Welsh <jason at monsterjam dot org> for helping to track down
 a Solaris problem where ps returned multiple lines of output.
 
@@ -22,7 +24,7 @@ the action statement.
 Musicological supervision by Stuart Frankel <gecko@dustyfeet.com>,
 cutrate Ph.D.
 
-$Id: THANKS,v 1.8 2006/03/08 19:17:33 rockyb Exp $
+$Id: THANKS,v 1.9 2009/02/19 16:57:31 rockyb Exp $
 
 
 

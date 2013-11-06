@@ -9,8 +9,10 @@
 
 <body style="background-color: white">
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -31,7 +33,7 @@
 	</ul>
 
 	<li><a href="#example_configuration">EXAMPLE CONFIGURATION</a></li>
-	<li><a href="#using__prolog_for_getting_nonps_information">Using $PROLOG for getting non-ps information</a></li>
+	<li><a href="#using__prolog_for_getting_non_ps_information">Using $PROLOG for getting non-ps information</a></li>
 	<li><a href="#security_considerations">SECURITY CONSIDERATIONS</a></li>
 	<li><a href="#troubleshooting">TROUBLESHOOTING</a></li>
 	<li><a href="#bugs">BUGS</a></li>
@@ -39,9 +41,11 @@
 	<li><a href="#author">AUTHOR</a></li>
 	<li><a href="#copyright">COPYRIGHT</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -58,7 +62,7 @@
 <h1><a name="description">DESCRIPTION</a></h1>
 <p>Periodically a list of processes obtained via <code>ps</code>. More precisely
 each item in the list contains the process name (just what's listed in
-the ``cmd'' field, not the full command and arguments) and its process
+the &quot;cmd&quot; field, not the full command and arguments) and its process
 id (pid). A configuration file specifies a list of Perl
 regular-expression patterns to match the processes against. For each
 match, a Perl expression specified for that pattern is evaluated. The
@@ -102,34 +106,34 @@ your configuration).</p>
 </p>
 <h2><a name="options">OPTIONS</a></h2>
 <dl>
-<dt><strong><a name="item__2d_2dhelp">--help</a></strong></dt>
+<dt><strong><a name="help" class="item">--help</a></strong></dt>
 
 <dd>
 <p>Print a usage message on standard error and exit with a return code
 of 100.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2ddoc">--doc</a></strong></dt>
+<dt><strong><a name="doc" class="item">--doc</a></strong></dt>
 
 <dd>
 <p>Extact the full documentation that you are reading now, print it and
 exit with a return code of 101.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2dversion">--version</a></strong></dt>
+<dt><strong><a name="version" class="item">--version</a></strong></dt>
 
 <dd>
 <p>Print the version release on standard output and exit with a return
 code of 10.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2ddebug_number">--debug <em>number</em></a></strong></dt>
+<dt><strong><a name="debug_number" class="item">--debug <em>number</em></a></strong></dt>
 
 <dd>
 <p>Give debugging output. The higher the number, the more the output. The
 default is 0 = none. 2 is the most debugging output.</p>
 </dd>
-<dt><strong><a name="item__5b_2d_2dconfig_5d_configuration_file">[--config] <em>configuration file</em></a></strong></dt>
+<dt><strong><a name="config_configuration_file" class="item">[--config] <em>configuration file</em></a></strong></dt>
 
 <dd>
 <p>Specify configuration file. .</p>
@@ -138,7 +142,7 @@ of the configuration file and <a href="#example_configuration">EXAMPLE CONFIGURA
 example of a configuration file.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2dlog__5blog_file_5d">--log [<em>log file</em>]</a></strong></dt>
+<dt><strong><a name="log_log_file" class="item">--log [<em>log file</em>]</a></strong></dt>
 
 <dd>
 <p>Send or don't send error and debugging output to a log file. If option
@@ -146,39 +150,39 @@ is given but no logfile is specified, then use STDERR. The default is
 no error log file.  See also --syslog below.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2dsyslog__7c__2d_2dnosyslog">--syslog | --nosyslog</a></strong></dt>
+<dt><strong><a name="syslog_nosyslog" class="item">--syslog | --nosyslog</a></strong></dt>
 
 <dd>
 <p>Send or don't send error and debugging output to syslog. The default
 is to syslog error and debug output.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2ddaemon__7c__2d_2dnodaemon">--daemon | --nodaemon</a></strong></dt>
+<dt><strong><a name="daemon_nodaemon" class="item">--daemon | --nodaemon</a></strong></dt>
 
 <dd>
 <p>Run or don't as a daemon.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2dpath_search_2dpath">--path <em>search-path</em></a></strong></dt>
+<dt><strong><a name="path_search_path" class="item">--path <em>search-path</em></a></strong></dt>
 
 <dd>
 <p>Specify the executable search path used in running commands.</p>
 </dd>
-<dt><strong><a name="item__2d_2dps_2dprog_program">--ps-prog <em>program</em></a></strong></dt>
+<dt><strong><a name="ps_prog_program" class="item">--ps-prog <em>program</em></a></strong></dt>
 
 <dd>
 <p>One can specify the command that gives ps information. By default, the
-command is <em>/bin/ps</em>.</p>
+command is <em class="file">/bin/ps</em>.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2drun__7c__2d_2dnorun">--run | --norun</a></strong></dt>
+<dt><strong><a name="run_norun" class="item">--run | --norun</a></strong></dt>
 
 <dd>
 <p>do/don't run actions go through the motions as though we were going
 to. This may be useful in debugging.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__2d_2dsleep_interval_in_seconds">--sleep <em>interval in seconds</em></a></strong></dt>
+<dt><strong><a name="sleep_interval_in_seconds" class="item">--sleep <em>interval in seconds</em></a></strong></dt>
 
 <dd>
 <p>It is expected that one might want to run ps-watcher over and over
@@ -209,7 +213,7 @@ signal.</p>
 <p>The format of a configuration file is a series of fully qualified
 filenames enclosed in square brackets followed by a number of
 parameter lines. Each parameter line has a parameter name followed by
-an ``equal'' sign and finally value. That is:</p>
+an &quot;equal&quot; sign and finally value. That is:</p>
 <pre>
  # This is a comment line
  ; So is this.
@@ -223,36 +227,36 @@ an ``equal'' sign and finally value. That is:</p>
 <p>Comments start with # or ; and take effect to the end of the line.</p>
 <p>This should be familiar to those who have worked with text-readible
 Microsoft <code>.INI</code> files.</p>
-<p>Note process patterns, (<em>process-pattern1</em> and <em>process-pattern2</em>
+<p>Note process patterns, (<em class="file">process-pattern1</em> and <em class="file">process-pattern2</em>
 above) must be unique. If there are times when you may want to
 refer to the same process, one can be creative to make these unique.
-e.g. <em>cron</em> and <em>[c]ron</em> which refer to the same process even
+e.g. <em class="file">cron</em> and <em class="file">[c]ron</em> which refer to the same process even
 though they <em>appear</em> to be different.</p>
 <p>As quoted directly from the Config::IniFiles documentation:</p>
 <p>Multiline or multivalued fields may also be defined ala UNIX
-``here document'' syntax:</p>
+&quot;here document&quot; syntax:</p>
 <pre>
   Parameter=&lt;&lt;EOT
   value/line 1
   value/line 2
   EOT</pre>
-<p>You may use any string you want in place of ``EOT''.  Note
-that what follows the ``&lt;&lt;'' and what appears at the end of
+<p>You may use any string you want in place of &quot;EOT&quot;.  Note
+that what follows the &quot;&lt;&lt;&quot; and what appears at the end of
 the text <em>must</em> match exactly, including any trailing
 whitespace.</p>
-<p>There are two special ``process patterns'': $PROLOG and $EPILOG, the
+<p>There are two special &quot;process patterns&quot;: $PROLOG and $EPILOG, the
 former should appear first and the latter last.</p>
 <p>You can put perl code to initialize variables here and do cleanup
-actions in these sections using ``perl-action.''</p>
+actions in these sections using &quot;perl-action.&quot;</p>
 <p>A description of parameters names, their meanings and potential values
 follows.</p>
 <dl>
-<dt><strong><a name="item_trigger">trigger</a></strong></dt>
+<dt><strong><a name="trigger" class="item">trigger</a></strong></dt>
 
 <dd>
 <p>This parameter specifies the condition on which a process action is
 fired.  The condition is evaluated with Perl <code>eval()</code> and should
-therefore return something which is equivalent to ``true'' in a Perl
+therefore return something which is equivalent to &quot;true&quot; in a Perl
 expression.</p>
 <p>If no trigger is given in a section, true or 1 is assumed and
 the action is unconditionally triggered.</p>
@@ -267,23 +271,23 @@ the action is unconditionally triggered.</p>
   [httpd$]
   trigger = $count &lt;= 4</pre>
 </dd>
-<dt><strong><a name="item_occurs">occurs</a></strong></dt>
+<dt><strong><a name="occurs" class="item">occurs</a></strong></dt>
 
 <dd>
 <p>This parameter specifies how many times an action should be performed
 on processes matching the section trigger. Acceptable values are
-``every'', ``first'', ``first-trigger'', and ``none''.</p>
-<p>Setting the occurs value to ``none'' causes the the trigger to be
+&quot;every&quot;, &quot;first&quot;, &quot;first-trigger&quot;, and &quot;none&quot;.</p>
+<p>Setting the occurs value to &quot;none&quot; causes the the trigger to be
 evaluated when there are no matching processes.  Although one might
-think ``$count == 0'' in the action expression would do the same thing,
+think &quot;$count == 0&quot; in the action expression would do the same thing,
 currently as coded this does not work.</p>
-<p>Setting the occurs value to ``first'' causes the process-pattern rule to
+<p>Setting the occurs value to &quot;first&quot; causes the process-pattern rule to
 be finished after handling the first rule that matches, whether or not the
 trigger evaluated to true.</p>
-<p>Setting the occurs value to ``first-trigger'' causes the process-pattern
+<p>Setting the occurs value to &quot;first-trigger&quot; causes the process-pattern
 rule to be finished after handling the first rule that matches <em>and</em>
 the trigger evaluates to true.</p>
-<p>If the item parameter is not specified, ``first'' is assumed.</p>
+<p>If the item parameter is not specified, &quot;first&quot; is assumed.</p>
 <p>Examples:</p>
 <pre>
   [.]
@@ -309,7 +313,7 @@ the trigger evaluates to true.</p>
   occurs = none
   action = /etc/init.d/syslogd start</pre>
 </dd>
-<dt><strong><a name="item_action">action</a></strong></dt>
+<dt><strong><a name="action" class="item">action</a></strong></dt>
 
 <dd>
 <p>This specifies the action, a command that gets run by the system
@@ -318,7 +322,7 @@ shell, when the trigger condition is evaluated to be true.</p>
 <pre>
  action = /etc/init.d/market_loader.init restart</pre>
 </dd>
-<dt><strong><a name="item_perl_2daction">perl-action</a></strong></dt>
+<dt><strong><a name="perl_action" class="item">perl-action</a></strong></dt>
 
 <dd>
 <p>This specifies Perl statements to be eval'd. This can be especially
@@ -352,25 +356,25 @@ the name of this program ps-watcher.</p>
 <p>The following variables can be used in either the pattern or action
 fields.</p>
 <dl>
-<dt><strong><a name="item__action">$action</a></strong></dt>
+<dt><strong><a name="_action" class="item">$action</a></strong></dt>
 
 <dd>
 <p>A string containing the text of the action to run.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__perl_action">$perl_action</a></strong></dt>
+<dt><strong><a name="_perl_action" class="item">$perl_action</a></strong></dt>
 
 <dd>
 <p>A string containing the text of the perl_action to run.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__ps_pat">$ps_pat</a></strong></dt>
+<dt><strong><a name="_ps_pat" class="item">$ps_pat</a></strong></dt>
 
 <dd>
 <p>The Perl regular expression specified in the beginning of the section.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__command">$command</a></strong></dt>
+<dt><strong><a name="_command" class="item">$command</a></strong></dt>
 
 <dd>
 <p>The command that matched $ps_pat.</p>
@@ -387,14 +391,14 @@ case, backticks in $command are escaped.</p>
   action  = echo \&quot;Looks like you have a big \$command program: \$vsz KB\&quot;</pre>
 <p></p>
 </dd>
-<dt><strong><a name="item__count">$count</a></strong></dt>
+<dt><strong><a name="_count" class="item">$count</a></strong></dt>
 
 <dd>
 <p>The number of times the pattern matched. Presumably the number of
 processes of this class running.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__trigger">$trigger</a></strong></dt>
+<dt><strong><a name="_trigger" class="item">$trigger</a></strong></dt>
 
 <dd>
 <p>A string containing the text of the trigger.</p>
@@ -424,7 +428,7 @@ not match depending on which single line of the multiple <code>ps</code> lines i
 used.</p>
 <p></p>
 <dl>
-<dt><strong><a name="item__args">$args</a></strong></dt>
+<dt><strong><a name="_args" class="item">$args</a></strong></dt>
 
 <dd>
 <p>The command along with its command arguments. It is possible that this
@@ -432,43 +436,43 @@ is might get truncated at certain length (if ps does likewise as is
 the case on Solaris).</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__ppid">$ppid</a></strong></dt>
+<dt><strong><a name="_ppid" class="item">$ppid</a></strong></dt>
 
 <dd>
 <p>The parent process id.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__stime">$stime</a></strong></dt>
+<dt><strong><a name="_stime" class="item">$stime</a></strong></dt>
 
 <dd>
 <p>The start time of the process.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__etime">$etime</a></strong></dt>
+<dt><strong><a name="_etime" class="item">$etime</a></strong></dt>
 
 <dd>
 <p>The end time of the process.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__pmem">$pmem</a></strong></dt>
+<dt><strong><a name="_pmem" class="item">$pmem</a></strong></dt>
 
 <dd>
 <p>The process memory.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__pcpu">$pcpu</a></strong></dt>
+<dt><strong><a name="_pcpu" class="item">$pcpu</a></strong></dt>
 
 <dd>
 <p>The percent CPU utilization.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__tty">$tty</a></strong></dt>
+<dt><strong><a name="_tty" class="item">$tty</a></strong></dt>
 
 <dd>
 <p>The controlling tty.</p>
 <p></p>
 </dd>
-<dt><strong><a name="item__vsz">$vsz</a></strong></dt>
+<dt><strong><a name="_vsz" class="item">$vsz</a></strong></dt>
 
 <dd>
 <p>Virtual memory size of the process</p>
@@ -540,7 +544,7 @@ and <code>DAYS</code> respectively and they have the expected definitions:</p>
 <p>
 </p>
 <hr />
-<h1><a name="using__prolog_for_getting_nonps_information">Using $PROLOG for getting non-ps information</a></h1>
+<h1><a name="using__prolog_for_getting_non_ps_information">Using $PROLOG for getting non-ps information</a></h1>
 <p>Here is an example to show how to use ps-watcher to do something not
 really possible from ps: check to see if a <em>port</em> is active.  We make
 use of lsof to check port 3333 and the $PROLOG make sure it runs.</p>
@@ -609,7 +613,7 @@ variables.</p>
 <p>See also <em>ps(1)</em> and <em>syslogd(8)</em>.</p>
 <p>Another cool program doing ps-like things is <code>xps</code>. Well okay, it's
 another program I distributed. It shows the process tree dynamically
-updated using X Motif and tries to display the output ``attractively''
+updated using X Motif and tries to display the output &quot;attractively&quot;
 but fast. You can the find the homepage at
 <a href="http://motif-pstree.sourceforge.net">http://motif-pstree.sourceforge.net</a> and it download via
 <a href="http://prdownloads.sourceforge.net/motif-pstree?sort_by=date&sort=desc">http://prdownloads.sourceforge.net/motif-pstree</a></p>

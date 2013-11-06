@@ -18,11 +18,11 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
 dnl 02110-1301  USA.
 
-dnl $Id: configure.ac,v 1.43 2008/12/25 16:42:49 rockyb Exp $
+dnl $Id: configure.ac,v 1.45 2009/03/15 06:59:23 rockyb Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(ps-watcher.in.in)
-AM_INIT_AUTOMAKE(ps-watcher,1.07)
+AM_INIT_AUTOMAKE(ps-watcher,1.08)
 
 AM_MISSING_PROG(CVS2CL, cvs2cl, $missing_dir)
 AM_MAINTAINER_MODE
