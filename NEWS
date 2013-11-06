@@ -1,3 +1,8 @@
+Changes from 1.07 to 1.08 (March 15, 2009)
+
+ - pidfile support via Jan Wagner.
+ - Darwin9 support
+
 Changes from 1.06 to 1.07 (December 25, 2008)
 - Changed to include and tested on Darwin9
 
@@ -93,4 +98,4 @@ Make "occurs = none" mean to run if there are no matching ps processes.
 
 ps-watcher 0.93 -- first general release.
 
-$Id: NEWS,v 1.28 2008/12/25 16:39:17 rockyb Exp $
+$Id: NEWS,v 1.29 2009/03/15 06:59:23 rockyb Exp $

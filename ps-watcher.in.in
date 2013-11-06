@@ -1,7 +1,7 @@
 #!@PERL@ -w
 # -*- Perl -*-
 use diagnostics;
-my $vcid='$Id: ps-watcher.in.in,v 1.62 2008/12/23 11:09:24 rockyb Exp $ ';
+my $vcid='$Id: ps-watcher.in.in,v 1.63 2009/02/19 16:57:31 rockyb Exp $ ';
 # See usage subroutine or perlpod documentation below.
 
 # Copyright (C) 2000, 2002, 2003, 2004, 2005, 2006, 2008 
@@ -23,8 +23,11 @@ my $vcid='$Id: ps-watcher.in.in,v 1.62 2008/12/23 11:09:24 rockyb Exp $ ';
 
 use vars qw($program $ps_cmd $ps_cmdfull $ps_fullcmd_fmt @ps_vars $ps_dvars
 	    $0 $logopened $ps_args_fmt $args
-            $count $pid $command $ps_arg_opts $DEVNULL %opts
+            $count $pid $command $ps_arg_opts $DEVNULL %opts $PIDFILE
            );
+
+$PIDFILE = "/var/run/ps-watcher.pid";
+
 use strict;
 BEGIN { require 5.00503 }
 
@@ -130,6 +133,7 @@ sub gather_psinfo();
 sub read_config($);
 sub check_config_file($);
 sub run_trigger($$$);
+sub check_pid();
 
 init();
 process_options();
@@ -147,7 +151,12 @@ if (!defined($cfg)) {
 }
 
 if ($opts{daemon}) {
-  daemonize();
+    if (! check_pid()) {
+      exit 1;
+    }
+    if (! daemonize()) {
+     exit 1;
+    }
 }
 
 install_handlers();
@@ -576,14 +585,62 @@ PARTICULAR PURPOSE.
   exit 10;
 }
 
+sub check_pid() {
+  if (-f $PIDFILE) {
+    if (open(PID,$PIDFILE)) {
+      my $pid = <PID>;
+      if (!close(PID)) {
+        logger("Unable to close file handle PID for file '$PIDFILE': $!");
+        return;
+      }
+      if (-f "/proc/$pid/stat") {
+        if (open(FH,"/proc/$pid/stat")) {
+          my $line = <FH>;
+          if (!close(FH)) {
+            logger("Unable to close file handle FH for file '/proc/$pid/stat': $!");
+            return;
+          }
+          if ($line =~ /\d+[^(]*\((.*)\)\s*/) {
+            my $process = $1;
+            if ($process =~ /^$program$/) {
+              logger("$program already running at PID $pid; exiting.");
+              exit(0);
+            }
+          }
+        } else {
+          logger("Unable to open file handle FH for file '/proc/$pid/stat': $!");
+          return;
+        }
+      } else {
+        logger("Removing stale PID file.");
+        unlink($PIDFILE);
+      }
+    }else{
+      logger("Unable to open file handle PID for file '$PIDFILE': $!");
+      return;
+    }
+  }
+  return 1;
+}
 
 sub daemonize() {
   chdir '/'                 or die "Can't chdir to /: $!";
   defined(my $pid = fork)   or die "Can't fork: $!";
   exit 0 if $pid;
+  if (open(FH,">$PIDFILE")) {
+    print FH $$;
+    if (!close(FH)) {
+      logger("Unable to close file handle FH for file '$PIDFILE': $!");
+      return;
+    }
+  } else {
+    logger("Unable to open file handle FH for file '$PIDFILE': $!");
+    return;
+  }
   use POSIX qw(setsid);
   setsid()                  or die "Can't start a new session: $!";
   umask 0;
+  return 1;
 }
 
 # Time configuration file was last read.
