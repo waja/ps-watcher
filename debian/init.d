@@ -23,6 +23,8 @@ DESC=ps-watcher
 
 test -x $DAEMON || exit 0
 
+. /lib/lsb/init-functions
+
 # Include ps-watcher defaults if available
 if [ -f /etc/default/ps-watcher ] ; then
 	. /etc/default/ps-watcher
