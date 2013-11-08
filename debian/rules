@@ -30,11 +30,18 @@ build-stamp: config.status
 clean:
 	dh_testdir
 	dh_testroot
+	# remove target stamps
 	rm -f build-stamp
+	rm -f ps-watcher.stamp
+	# remove autoconf files
 	rm -f config.guess config.sub
 
 	# Add here commands to clean up after the build process.
-	[ ! -f Makefile ] || $(MAKE) clean
+	[ ! -f Makefile ] || $(MAKE) clean && find . -name Makefile -exec rm {} +
+	# clean files left behind make clean
+	rm -f config.* ps-watcher.in post-configure docs/pod2htmd.tmp
+	# delete modified (regenerated) files
+	rm -f docs/ps-watcher.8 docs/ps-watcher.html
 	dh_clean
 
 install: build
