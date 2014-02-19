@@ -42,6 +42,8 @@ clean:
 	rm -f config.* ps-watcher.in post-configure docs/pod2htmd.tmp
 	# delete modified (regenerated) files
 	rm -f docs/ps-watcher.8 docs/ps-watcher.html
+	# remove ps-watcher binary as this would we regenerated on building the package
+	rm -f ps-watcher
 	dh_clean
 
 install: build

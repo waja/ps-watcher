@@ -13,14 +13,3 @@ Index: ps-watcher-1.08/ps-watcher.in.in
    $opts{ps_pid_opts}  = '@PS_PID_OPTS@';   # How do I get pids and commands?
  
    $ps_arg_opts  = '@PS_ARGS@';       # How do I get full process command?
---- a/ps-watcher
-+++ b/ps-watcher
-@@ -855,7 +855,7 @@ Specify the executable search path used in running commands.
- =item --ps-prog I<program>
- 
- One can specify the command that gives ps information. By default, the
--command is F</bin/ps>.
-+command is F<no>.
- 
- Z<>
- 
