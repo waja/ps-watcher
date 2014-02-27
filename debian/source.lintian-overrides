@@ -1,3 +1,0 @@
-# we copy the files over from autotools-dev
-ps-watcher source: ancient-autotools-helper-file config.sub 2001-08-13
-ps-watcher source: ancient-autotools-helper-file config.guess 2002-07-23
