@@ -1,8 +1,21 @@
-ps-watcher (1.08-6) UNRELEASED; urgency=low
+ps-watcher (1.08-6) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * [9f9bacd] Add needed changes to patches/ps_binary
+  * [62ebac8] Adjusting clean target in debian/rules to completely cleanup
+  * [dc0bca0] Updating standards version to 3.9.4, no changes needed
+  * [6f0b2fa] Source init functions in init script
+  * [e5bc30b] Update debian/copyright to latest machine-readable format
+  * [d7faae5] Update Vcs-headers
+  * [b9b8758] Updating standards version to 3.9.5, no changes needed
+  * [a154d1a] Remove ps-watcher binary when making clean
+  * [9d9887c] travis-ci: Add travis-ci config
+  * [8ec3e39] travis-ci: Reorder and comment
+  * [7fab357] travis-ci: Add lintian checks after build
+  * [84de0bc] Remove asterisks from NEWS file
+  * [a4f22b3] Update VCS-* fields to current canonical URIs
+  * [1a95e5d] Remove obsolete lintian override file
 
- -- Jan Wagner <waja@cyconet.org>  Thu, 29 Mar 2012 19:43:03 +0200
+ -- Jan Wagner <waja@cyconet.org>  Sun, 02 Mar 2014 16:42:19 +0100
 
 ps-watcher (1.08-5) unstable; urgency=low
 
