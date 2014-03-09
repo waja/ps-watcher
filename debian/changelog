@@ -1,3 +1,10 @@
+ps-watcher (1.08-7) unstable; urgency=medium
+
+  * [f2c7947] Update Vcs-headers to selfhosted VCS
+  * [a36ddd6] Ignore modifications of ps-watcher script
+
+ -- Jan Wagner <waja@cyconet.org>  Mon, 10 Mar 2014 00:40:49 +0100
+
 ps-watcher (1.08-6) unstable; urgency=low
 
   * [9f9bacd] Add needed changes to patches/ps_binary
