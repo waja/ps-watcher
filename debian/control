@@ -5,8 +5,8 @@ Maintainer: Jan Wagner <waja@cyconet.org>
 Build-Depends: debhelper (>= 9)
 Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl, perl-modules
 Homepage: http://ps-watcher.sourceforge.net/
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-perl/packages/ps-watcher.git
-Vcs-Git: git://anonscm.debian.org/pkg-perl/packages/ps-watcher.git
+Vcs-Browser: https://gitlab.uncompleted.org/debian/ps-watcher
+Vcs-Git: https://gitlab.uncompleted.org/debian/ps-watcher.git
 Standards-Version: 3.9.5
 
 Package: ps-watcher
