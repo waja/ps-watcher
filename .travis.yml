@@ -1,12 +1,15 @@
 language: c
 
+# bypass broken certificate validation of uscan
+env: PERL_LWP_SSL_VERIFY_HOSTNAME=0
+
 before_install:
     # update package list
     - sudo apt-get update -qq
     # installneeded packages for uscan
     - sudo apt-get install -qq --no-install-recommends devscripts libwww-perl ca-certificates
     # download original tarball (and bypassing #687834)
-    - PERL_LWP_SSL_VERIFY_HOSTNAME=0; uscan --force-download
+    - uscan --force-download
     # remove packages needed for uscan
     - sudo apt-get purge -qq libwww-perl ca-certificates
     - sudo apt-get autoremove -qq
