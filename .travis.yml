@@ -4,11 +4,11 @@ before_install:
     # update package list
     - sudo apt-get update -qq
     # installneeded packages for uscan
-    - sudo apt-get install -qq --no-install-recommends devscripts libwww-perl
+    - sudo apt-get install -qq --no-install-recommends devscripts libwww-perl ca-certificates
     # download original tarball
     - uscan --force-download
     # remove packages needed for uscan
-    - sudo apt-get purge -qq libwww-perl
+    - sudo apt-get purge -qq libwww-perl ca-certificates
     - sudo apt-get autoremove -qq
 
 install:
