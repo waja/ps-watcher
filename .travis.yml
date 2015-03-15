@@ -1,8 +1,5 @@
 language: c
 
-# bypass broken certificate validation of uscan
-env: PERL_LWP_SSL_VERIFY_HOSTNAME=0
-
 before_install:
     # update package list
     - sudo apt-get update -qq
@@ -34,8 +31,10 @@ after_script:
 
 env:
   global:
+    # bypass broken certificate validation of uscan
+    - PERL_LWP_SSL_VERIFY_HOSTNAME=0
     # travis encrypt -r waja/ps-watcher GITHUBTOKEN=XXXXXX (https://help.github.com/articles/creating-an-access-token-for-command-line-use / http://docs.travis-ci.com/user/encryption-keys/)
-    secure: "Y4mgj75S6GAvPK1Xri4fPUZXipvwRIYzN4sVIaVbrZqJ1LxhR+91fNwRXxy9bsyI3Bje2H9ZK/W6anGUkqrk8rmjR4vvrbQtR2WBnS4Bt4CpdQKlg/SU1e6rSnJas92GqFf8JSv1C3T2rRcv0bLjhxs4GFUxuXltxmJwkAbWHhI="
+    - secure: "Y4mgj75S6GAvPK1Xri4fPUZXipvwRIYzN4sVIaVbrZqJ1LxhR+91fNwRXxy9bsyI3Bje2H9ZK/W6anGUkqrk8rmjR4vvrbQtR2WBnS4Bt4CpdQKlg/SU1e6rSnJas92GqFf8JSv1C3T2rRcv0bLjhxs4GFUxuXltxmJwkAbWHhI="
 
 after_success:
     - mkdir -p debian/build/release/
