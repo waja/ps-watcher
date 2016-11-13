@@ -3,7 +3,7 @@ Section: admin
 Priority: extra
 Maintainer: Jan Wagner <waja@cyconet.org>
 Build-Depends: debhelper (>= 9)
-Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl, perl-modules
+Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl
 Homepage: http://ps-watcher.sourceforge.net/
 Vcs-Browser: https://gitlab.uncompleted.org/debian/ps-watcher
 Vcs-Git: https://gitlab.uncompleted.org/debian/ps-watcher.git
