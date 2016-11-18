@@ -1,11 +1,16 @@
 sudo: required
 
 env:
-  - TRAVIS_DEBIAN_DISTRIBUTION=unstable TRAVIS_DEBIAN_SECURITY_UPDATES=false
-  - TRAVIS_DEBIAN_DISTRIBUTION=testing
+  - TRAVIS_DEBIAN_DISTRIBUTION=unstable TRAVIS_DEBIAN_MIRROR="http://httpredir.debian.org/debian/" TRAVIS_DEBIAN_SECURITY_UPDATES=false
+  - TRAVIS_DEBIAN_DISTRIBUTION=testing  TRAVIS_DEBIAN_MIRROR="http://httpredir.debian.org/debian/"
+  - TRAVIS_DEBIAN_DISTRIBUTION=stable   TRAVIS_DEBIAN_MIRROR="http://httpredir.debian.org/debian/"
 
 services:
   - docker
+
+before_script:
+  # fetch all tags (not done due travis cloning with depth=50)
+  - git fetch --tags
 
 script:
   # build the debian package
