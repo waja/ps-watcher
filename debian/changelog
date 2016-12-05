@@ -1,8 +1,28 @@
-ps-watcher (1.08-8) UNRELEASED; urgency=medium
+ps-watcher (1.08-8) unstable; urgency=medium
 
-  * 
+  * [0d63c8c] Bump Standards-Version to 3.9.6, no changes needed
+  * [cb6a23c] travis-ci: don't install build-deps manual
+  * [97be247] travis-ci: build package with dpkg-buildpackage
+  * [6f42c4c] travis-ci: install ca-certificates to get certs for uscan
+  * [4717c8d] travis-ci: bypassing #687834
+  * [730cbe8] travis-ci: bypass certificate validation of uscan
+  * [0ab833e] travis-ci: Initial support for uploading releases to github
+  * [93f9a0b] travis-ci: Fix setting environment variables
+  * [f0203f7] Merging upstream changes of github-release.sh
+  * [14ced40] Updating copyright and author of debian/bin/github-release.sh
+  * [8110407] debian/control: reformating with warp-and-sort
+  * [ec7e507] travis-ci: grab actual used upstream version
+  * [bf74ead] travis-ci: Adding required arguments for trusty
+  * [c408d41] travis-ci: automatically install dependencies
+  * [e87e5a8] d/control: Bump Standards-Version to 3.9.8, no changes needed
+  * [f37bba0] d/control: Depend on lsb-base
+  * [e77e9ec] d/rules: Use dh_prep instead of 'dh_clean -k'
+  * [5d47daa] d/control: Droping perl-modules build dep
+  * [3f09626] travis-ci: Make use of travis.d.n
+  * [212f8e2] travis-ci: Testing stable too and fetching all tags
+  * [0ba1b56] travis-ci: Add my own trusty ppa for newer lintian
 
- -- Jan Wagner <waja@cyconet.org>  Mon, 13 Oct 2014 15:14:36 +0200
+ -- Jan Wagner <waja@cyconet.org>  Mon, 05 Dec 2016 11:22:36 +0100
 
 ps-watcher (1.08-7) unstable; urgency=medium
 
