@@ -1,6 +1,6 @@
 Source: ps-watcher
 Section: admin
-Priority: extra
+Priority: optional
 Maintainer: Jan Wagner <waja@cyconet.org>
 Build-Depends: debhelper (>= 9)
 Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl
