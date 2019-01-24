@@ -1,8 +1,10 @@
-ps-watcher (1.08-9) UNRELEASED; urgency=medium
+ps-watcher (1.08-9) unstable; urgency=medium
 
-  * UNRELEASED
+  * [adb45ae] travis-ci: Use xenial image
+  * [910f8b9] d/control: Bump Standards-Version to 4.3.0, no changes needed
+  * [14f90dd] d/control: Priority extra is deprecated, using optional
 
- -- Jan Wagner <waja@cyconet.org>  Mon, 05 Dec 2016 11:48:17 +0100
+ -- Jan Wagner <waja@cyconet.org>  Thu, 24 Jan 2019 08:18:46 +0100
 
 ps-watcher (1.08-8) unstable; urgency=medium
 
