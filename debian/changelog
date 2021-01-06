@@ -1,8 +1,19 @@
-ps-watcher (1.08-10) UNRELEASED; urgency=medium
+ps-watcher (1.08-10) unstable; urgency=medium
 
-  * 
+  * [ed0099b] Raising compat level to 9, debhelper is already on 9
+    (Closes: #965785)
+  * [75383b3] Bump Standards-Version to 4.5.1.0, no changes needed
+  * [559d2a8] Adding Github CI
+  * [412e691] d/control: Raise compat level to 12
 
- -- Jan Wagner <waja@cyconet.org>  Thu, 24 Jan 2019 08:26:28 +0100
+ -- Jan Wagner <waja@cyconet.org>  Wed, 06 Jan 2021 21:59:48 +0100
+
+ps-watcher (1.08-9.1) unstable; urgency=medium
+
+  * Non maintainer upload by the Reproducible Builds team.
+  * No source change upload to rebuild on buildd with .buildinfo files.
+
+ -- Holger Levsen <holger@debian.org>  Wed, 06 Jan 2021 17:28:10 +0100
 
 ps-watcher (1.08-9) unstable; urgency=medium
 
