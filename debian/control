@@ -7,7 +7,7 @@ Build-Depends-Indep: autotools-dev, libconfig-inifiles-perl
 Homepage: https://ps-watcher.sourceforge.net/
 Vcs-Browser: https://gitlab.uncompleted.org/debian/ps-watcher
 Vcs-Git: https://gitlab.uncompleted.org/debian/ps-watcher.git
-Standards-Version: 4.5.1.0
+Standards-Version: 4.6.2
 
 Package: ps-watcher
 Architecture: all
