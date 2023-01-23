@@ -1,8 +1,20 @@
-ps-watcher (1.08-11) UNRELEASED; urgency=medium
+ps-watcher (1.08-11) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * [5f175a7] Use secure copyright file specification URI.
+  * [829bf29] Set upstream metadata fields: Repository.
+  * [c390306] d/source/options: Adding .github to diff ignore
+  * [1c64860] Adding d/.gitlab-ci.yml
+  * [b8ef571] Do not remove .git* anymore
+  * [02612c6] Use secure URI in Homepage field.
+  * [7339857] Bump Standards-Version to 4.6.2
+  * [e427efa] Update watch file format version to 4.
+  * [97dd2ee] Drop lsb-base, sysvinit-utils is essential
+  * [a009193] Adding unitfile
+  * [032d1f7] Set upstream metadata fields: Archive, Bug-Database.
+  * [ec1d2af] Set Rules-Requires-Root: no.
+  * [ea639a6] Bump debhelper from old 12 to 13.
 
- -- Jan Wagner <waja@cyconet.org>  Wed, 06 Jan 2021 22:04:39 +0100
+ -- Jan Wagner <waja@cyconet.org>  Mon, 23 Jan 2023 12:24:01 +0000
 
 ps-watcher (1.08-10) unstable; urgency=medium
 
