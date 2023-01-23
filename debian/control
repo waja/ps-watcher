@@ -8,6 +8,7 @@ Homepage: https://ps-watcher.sourceforge.net/
 Vcs-Browser: https://gitlab.uncompleted.org/debian/ps-watcher
 Vcs-Git: https://gitlab.uncompleted.org/debian/ps-watcher.git
 Standards-Version: 4.6.2
+Rules-Requires-Root: no
 
 Package: ps-watcher
 Architecture: all
