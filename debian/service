@@ -1,0 +1,14 @@
+[Unit]
+Description=monitoring a system via ps-like commands
+
+[Service]
+Environment=PIDFILE=/var/run/ps-watcher.pid
+EnvironmentFile=-/etc/default/ps-watcher
+ExecStart=/usr/sbin/ps-watcher -c $CONFIG --daemon $DAEMON_OPTS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+Type=notify
+
+[Install]
+WantedBy=multi-user.target
