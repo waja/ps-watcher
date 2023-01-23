@@ -1,3 +1,9 @@
+ps-watcher (1.08-12) UNRELEASED; urgency=medium
+
+  *
+
+ -- Jan Wagner <waja@cyconet.org>  Mon, 23 Jan 2023 12:34:15 +0000
+
 ps-watcher (1.08-11) unstable; urgency=medium
 
   * [5f175a7] Use secure copyright file specification URI.
