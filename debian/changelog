@@ -1,3 +1,10 @@
+ps-watcher (1.08-12) unstable; urgency=medium
+
+  * [3b4ea4c] Import NMU changes from 1.08-11.1
+  * [91a1a29] d/control: Update VCS-headers to salsa.debian.org
+
+ -- Jan Wagner <waja@cyconet.org>  Sun, 07 Sep 2025 06:54:12 +0000
+
 ps-watcher (1.08-11.1) unstable; urgency=medium
 
   * Non-maintainer upload.
